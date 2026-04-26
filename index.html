@@ -24,7 +24,6 @@
             color: #1e293b;
         }
 
-        /* Textura de fondo sutil */
         body::before {
             content: "";
             position: fixed;
@@ -127,14 +126,15 @@
 
         .flower-text {
             background: #db2777;
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: white;
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(219, 39, 119, 0.2);
             margin-top: 5px;
             white-space: nowrap;
+            z-index: 10;
         }
 
         .particle {
@@ -205,6 +205,26 @@
             margin: 0 auto;
             box-shadow: 0 10px 30px rgba(219, 39, 119, 0.1);
         }
+
+        /* ESTILOS MINIJUEGO */
+        #game-area {
+            width: 100%;
+            height: 400px;
+            background: #fff;
+            border-radius: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 4px dashed #f472b6;
+            cursor: crosshair;
+        }
+        .game-heart {
+            position: absolute;
+            font-size: 2rem;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+        .game-heart:active { transform: scale(1.5); }
     </style>
 </head>
 <body>
@@ -229,13 +249,11 @@
                 <div class="inline-block px-4 py-1 bg-pink-100 text-pink-600 rounded-full text-xs font-bold uppercase tracking-widest mb-8">Especialmente para ti</div>
                 <h1 class="text-8xl md:text-[11rem] font-romantic text-pink-600 mb-4 leading-tight">Karen</h1>
                 
-                <!-- TEXTO CREATIVO CONTEXTO CONTADOR -->
                 <div class="mb-8">
                     <p class="text-2xl font-romantic text-pink-500 italic">Cada segundo a tu lado es un tesoro...</p>
                     <h3 class="text-lg font-bold text-slate-600 uppercase tracking-[0.2em] mt-2">Nuestra historia ha florecido por:</h3>
                 </div>
 
-                <!-- Contador Fuerte -->
                 <div class="flex flex-wrap justify-center gap-6 mb-12">
                     <div class="counter-box"><span id="days" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Días</span></div>
                     <div class="counter-box"><span id="hours" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Horas</span></div>
@@ -243,7 +261,6 @@
                     <div class="counter-box"><span id="seconds" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Segs</span></div>
                 </div>
 
-                <!-- Reproductor -->
                 <div class="music-bar">
                     <button id="playControl" class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition-all">
                         <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 ml-1" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -308,7 +325,21 @@
                 <h2 class="text-5xl font-romantic text-pink-600 mb-10">Siembra Flores para Nosotros 🌸</h2>
                 <div id="garden-container" onclick="addFlower(event)">
                     <div id="hint-msg" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <p class="font-romantic text-4xl text-pink-200 animate-pulse">Toca aquí para plantar amor...</p>
+                        <p class="font-romantic text-4xl text-pink-200 animate-pulse text-center px-4">Toca cualquier parte de este cuadro para plantar una flor con un mensaje especial...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MINIJUEGO: ATRAPA MI AMOR -->
+        <section class="main-card p-12 md:p-20 mb-16 reveal">
+            <div class="card-accent text-center">
+                <h2 class="text-5xl font-romantic text-pink-600 mb-4">Minijuego: Atrapa mi Amor 💖</h2>
+                <p class="text-gray-500 mb-6">¡Atrapa todos los corazones que puedas!</p>
+                <div id="game-area">
+                    <div id="game-score" class="absolute top-4 left-4 bg-pink-500 text-white px-4 py-2 rounded-full font-bold shadow-lg z-10">Puntos: 0</div>
+                    <div id="game-start-btn" class="absolute inset-0 flex items-center justify-center z-20">
+                        <button onclick="startGame()" class="bg-pink-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-xl hover:scale-110 transition-transform">¡Empezar a Jugar!</button>
                     </div>
                 </div>
             </div>
@@ -343,9 +374,19 @@
         const flowerSVGs = [
             `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#16a34a" stroke-width="5"/><circle cx="50" cy="40" r="25" fill="#f472b6"/><circle cx="50" cy="40" r="8" fill="#fde047"/></svg>`,
             `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><g fill="#db2777"><circle cx="50" cy="25" r="15"/><circle cx="75" cy="50" r="15"/><circle cx="50" cy="75" r="15"/><circle cx="25" cy="50" r="15"/><circle cx="50" cy="50" r="10" fill="#facc15"/></g></svg>`,
-            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><path d="M50 50 L80 20 M50 50 L20 20 M50 50 L80 80 M50 50 L20 80" stroke="#ec4899" stroke-width="10" stroke-linecap="round"/><circle cx="50" cy="50" r="12" fill="#facc15"/></svg>`
+            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><path d="M50 50 L80 20 M50 50 L20 20 M50 50 L80 80 M50 50 L20 80" stroke="#ec4899" stroke-width="10" stroke-linecap="round"/><circle cx="50" cy="50" r="12" fill="#facc15"/></svg>`,
+            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 70 L50 100" stroke="#16a34a" stroke-width="6"/><path d="M50 20 C30 20 20 40 50 70 C80 40 70 20 50 20" fill="#f43f5e"/></svg>`,
+            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><circle cx="50" cy="35" r="20" fill="#d946ef"/><circle cx="30" cy="45" r="15" fill="#d946ef"/><circle cx="70" cy="45" r="15" fill="#d946ef"/><circle cx="50" cy="50" r="10" fill="#fff"/></svg>`
         ];
-        const tags = ["Te Amo", "Brillante", "Única", "Fuerte", "Mágica", "Mía"];
+
+        const tags = [
+            "Te Amo", "Brillante", "Única", "Fuerte", "Mágica", "Mi Todo", 
+            "Eres Luz", "Mi Inspiración", "Inteligente", "Preciosa", "Valiente", 
+            "Mi Compañera", "Te Admiro", "Dulce Karen", "Mi Sueño Real", "Increíble",
+            "Pura Magia", "Mi Corazón", "Bella", "Talentosa", "Mi Mundo",
+            "Te Extraño", "Mi Favorita", "Chispa Única", "Especial", "Amor Puro",
+            "Mi Tesoro", "Radiante", "Sin Igual", "Siempre Tú", "Perfecta", "Te Pienso"
+        ];
 
         function addFlower(e) {
             const container = document.getElementById('garden-container');
@@ -361,14 +402,17 @@
             flower.style.left = `${x - 30}px`;
             flower.style.top = `${y - 30}px`;
             flower.style.setProperty('--r', `${Math.random() * 60 - 30}deg`);
-            flower.style.setProperty('--s', Math.random() * 0.3 + 0.9);
+            flower.style.setProperty('--s', Math.random() * 0.3 + 0.85);
             
-            flower.innerHTML = `${flowerSVGs[Math.floor(Math.random() * flowerSVGs.length)]}<div class="flower-text">${tags[Math.floor(Math.random() * tags.length)]}</div>`;
+            const randomIcon = flowerSVGs[Math.floor(Math.random() * flowerSVGs.length)];
+            const randomTag = tags[Math.floor(Math.random() * tags.length)];
+            
+            flower.innerHTML = `${randomIcon}<div class="flower-text">${randomTag}</div>`;
             container.appendChild(flower);
         }
 
         function sendKiss() {
-            const emojis = ['💖', '💋', '🌸', '✨', '🔥', '🥰'];
+            const emojis = ['💖', '💋', '🌸', '✨', '🔥', '🥰', '🌹'];
             for(let i = 0; i < 50; i++) {
                 setTimeout(() => {
                     const p = document.createElement('div');
@@ -382,6 +426,68 @@
                     setTimeout(() => p.remove(), 5000);
                 }, i * 80);
             }
+        }
+
+        /* LÓGICA DEL MINIJUEGO */
+        let score = 0;
+        let gameActive = false;
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('game-score');
+
+        function startGame() {
+            if (gameActive) return;
+            gameActive = true;
+            score = 0;
+            scoreDisplay.innerText = "Puntos: 0";
+            document.getElementById('game-start-btn').classList.add('hidden');
+            
+            const interval = setInterval(() => {
+                if (!gameActive) {
+                    clearInterval(interval);
+                    return;
+                }
+                createGameHeart();
+            }, 800);
+
+            // Termina el juego tras 30 segundos
+            setTimeout(() => {
+                gameActive = false;
+                document.getElementById('game-start-btn').classList.remove('hidden');
+                document.querySelector('#game-start-btn button').innerText = `¡Bien hecho! ${score} Puntos. ¿Otra vez?`;
+            }, 30000);
+        }
+
+        function createGameHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'game-heart';
+            const emojis = ['❤️', '💖', '💝', '💕', '💗'];
+            heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            const areaWidth = gameArea.offsetWidth - 40;
+            heart.style.left = Math.random() * areaWidth + 'px';
+            heart.style.top = '-50px';
+            
+            heart.onclick = (e) => {
+                e.stopPropagation();
+                score += 10;
+                scoreDisplay.innerText = `Puntos: ${score}`;
+                heart.innerHTML = '✨';
+                setTimeout(() => heart.remove(), 200);
+            };
+
+            gameArea.appendChild(heart);
+
+            // Animación de caída manual para mayor control
+            let pos = -50;
+            const speed = Math.random() * 2 + 2;
+            const fallInterval = setInterval(() => {
+                pos += speed;
+                heart.style.top = pos + 'px';
+                if (pos > 400) {
+                    clearInterval(fallInterval);
+                    heart.remove();
+                }
+            }, 20);
         }
 
         const startDate = new Date(2025, 6, 17);
