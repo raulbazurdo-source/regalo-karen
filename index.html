@@ -3,36 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Karen - Nuestra Dulce Historia</title>
+    <title>Para Karen - Mi Mundo Mágico</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-    <!-- Three.js para el planeta 3D -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --rosa-fuerte: #f472b6;
-            --vainilla: #fdfbf7;
+            --rosa-fuerte: #ec4899;
+            --rosa-brillante: #f472b6;
+            --rosa-fondo: #fff1f2;
+            --rosa-acento: #db2777;
         }
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #fdf5e6;
-            background-image: radial-gradient(#fbb6ce 1px, transparent 1px);
-            background-size: 25px 25px;
+            background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 50%, #fecdd3 100%);
+            background-attachment: fixed;
             margin: 0;
             overflow-x: hidden;
+            position: relative;
+            color: #1e293b;
+        }
+
+        /* Textura de fondo sutil */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/pinstriped-suit.png");
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: -1;
         }
 
         .font-romantic { font-family: 'Dancing Script', cursive; }
 
         .main-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
             border: 8px solid white;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 50px rgba(219, 39, 119, 0.15);
+            border-radius: 3rem;
+            position: relative;
         }
 
-        /* Efecto de Carga Suave */
+        .card-accent {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 2.5rem;
+            padding: 2.5rem;
+            box-shadow: inset 0 0 40px rgba(251, 113, 133, 0.1);
+        }
+
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -43,432 +63,357 @@
             transform: translateY(0);
         }
 
-        /* Reproductor de Música */
-        .audio-player {
-            background: #fff5f7;
-            border: 2px solid #fce7f3;
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hug-modal {
+            background: white;
+            padding: 3.5rem;
+            border-radius: 3rem;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            border: 10px solid #fbcfe8;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .hug-modal {
+            transform: scale(1);
+        }
+
+        #garden-container {
+            width: 100%;
+            height: 550px;
+            background: #fff;
+            border-radius: 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 6px solid #fecdd3;
+            box-shadow: inset 0 10px 30px rgba(219, 39, 119, 0.05);
+            cursor: pointer;
+        }
+
+        .flower {
+            position: absolute;
+            animation: grow-in 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        @keyframes grow-in {
+            from { transform: scale(0) rotate(-45deg); opacity: 0; }
+            to { transform: scale(var(--s)) rotate(var(--r)); opacity: 1; }
+        }
+
+        .flower-text {
+            background: #db2777;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.2);
+            margin-top: 5px;
+            white-space: nowrap;
+        }
+
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        .action-btn {
+            background: white;
+            border: 3px solid #f472b6;
+            color: #db2777;
+            box-shadow: 0 10px 25px rgba(219, 39, 119, 0.1);
+            transition: all 0.3s ease;
+        }
+        .action-btn:hover { 
+            transform: translateY(-5px);
+            background: #db2777;
+            color: white;
+            box-shadow: 0 15px 35px rgba(219, 39, 119, 0.25);
+        }
+
+        .counter-box {
+            background: white;
+            padding: 25px;
+            border-radius: 2rem;
+            min-width: 110px;
+            border: 2px solid #fbcfe8;
+            box-shadow: 0 8px 20px rgba(219, 39, 119, 0.08);
+        }
+
+        .polaroid {
+            background: white;
+            padding: 15px 15px 70px 15px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            transition: all 0.4s ease;
+        }
+        .polaroid:hover { transform: translateY(-10px) rotate(0deg) !important; }
+
+        .recipe-item {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            border-left: 6px solid #db2777;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+        }
+        .recipe-item:hover { transform: translateX(10px); }
+
+        .music-bar {
+            background: white;
+            border: 2px solid #f472b6;
             border-radius: 50px;
             padding: 10px 25px;
             display: flex;
             align-items: center;
             gap: 15px;
-            margin: 25px auto;
             max-width: 400px;
-        }
-
-        .play-button {
-            width: 55px;
-            height: 55px;
-            background: var(--rosa-fuerte);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        #progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #f472b6, #fb7185);
-            width: 0%;
-        }
-
-        /* Estilo Polaroid */
-        .polaroid {
-            background: white;
-            padding: 12px 12px 60px 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-            border: 1px solid #f3f3f3;
-        }
-        .polaroid img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-
-        /* Contenedor del Planeta 3D */
-        #canvas-container {
-            width: 100%;
-            height: 450px;
-            background: radial-gradient(circle, #fff5f7 0%, #fdf5e6 100%);
-            border-radius: 3rem;
-            cursor: grab;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid #fce7f3;
-        }
-        #canvas-container:active { cursor: grabbing; }
-
-        /* Animación de Abrazo */
-        @keyframes hug-shake {
-            0% { transform: scale(1); }
-            25% { transform: scale(1.02) rotate(1deg); }
-            75% { transform: scale(1.02) rotate(-1deg); }
-            100% { transform: scale(1); }
-        }
-        .hug-active { animation: hug-shake 0.5s ease-in-out infinite; }
-
-        .custom-btn {
-            background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 9999px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .counter-unit {
-            background: white;
-            padding: 15px 10px;
-            border-radius: 1.5rem;
-            min-width: 80px;
-            border: 2px solid #fce7f3;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(219, 39, 119, 0.1);
         }
     </style>
 </head>
 <body>
 
-    <!-- Modales -->
-    <div id="beso-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-pink-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
-        <div class="bg-white p-10 rounded-[3rem] shadow-2xl text-center max-w-sm mx-4 transform scale-90 transition-all duration-500" id="beso-content">
-            <div class="text-8xl mb-6 animate-bounce text-pink-500">💋</div>
-            <h3 class="text-4xl font-romantic text-pink-500 mb-4">¡Un beso gigante!</h3>
-            <p class="text-gray-600 italic text-lg mb-8">Porque eres la persona más dulce que conozco. ¡Te amo!</p>
-            <button onclick="cerrarModal('beso-modal')" class="text-pink-400 font-bold uppercase tracking-widest text-sm">Cerrar con amor</button>
+    <!-- MODAL DE ABRAZO -->
+    <div id="hug-modal-overlay" class="modal-overlay" onclick="closeHug()">
+        <div class="hug-modal" onclick="event.stopPropagation()">
+            <div class="flex justify-center mb-6">
+                <span class="text-7xl">🫂</span>
+            </div>
+            <h2 class="text-5xl font-romantic text-pink-600 mb-4">¡Abrazo Gigante!</h2>
+            <p class="text-gray-500 italic text-xl mb-8">Siente todo mi cariño atravesando la pantalla.</p>
+            <button onclick="closeHug()" class="bg-pink-500 text-white px-8 py-3 rounded-full font-bold hover:bg-pink-600 transition-colors">Te quiero</button>
         </div>
     </div>
 
-    <div id="abrazo-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-pink-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
-        <div class="bg-white p-10 rounded-[3rem] shadow-2xl text-center max-w-sm mx-4 transform scale-90 transition-all duration-500" id="abrazo-content">
-            <div class="text-8xl mb-6 text-pink-500">🫂</div>
-            <h3 class="text-4xl font-romantic text-pink-500 mb-4">Abrazo Virtual</h3>
-            <p class="text-gray-600 italic text-lg mb-8">Siénteme cerca de ti ahora mismo. No hay distancia para nuestro cariño.</p>
-            <button onclick="cerrarModal('abrazo-modal')" class="text-pink-400 font-bold uppercase tracking-widest text-sm">Cerrar con amor</button>
-        </div>
-    </div>
-
-    <div class="max-w-6xl mx-auto px-4 py-16" id="app-container">
+    <div class="max-w-6xl mx-auto px-6 py-20">
         
         <!-- Cabecera -->
-        <div class="main-card rounded-[3.5rem] p-10 md:p-20 text-center mb-16 reveal">
-            <h1 class="text-7xl md:text-9xl font-romantic text-pink-500 mb-6">Karen</h1>
-            <p class="text-2xl text-gray-500 mb-10 italic">"Tú eres la pizca de magia que le faltaba a mi mundo."</p>
+        <section class="main-card p-12 md:p-24 text-center mb-16 reveal">
+            <div class="card-accent">
+                <div class="inline-block px-4 py-1 bg-pink-100 text-pink-600 rounded-full text-xs font-bold uppercase tracking-widest mb-8">Especialmente para ti</div>
+                <h1 class="text-8xl md:text-[11rem] font-romantic text-pink-600 mb-4 leading-tight">Karen</h1>
+                
+                <!-- TEXTO CREATIVO CONTEXTO CONTADOR -->
+                <div class="mb-8">
+                    <p class="text-2xl font-romantic text-pink-500 italic">Cada segundo a tu lado es un tesoro...</p>
+                    <h3 class="text-lg font-bold text-slate-600 uppercase tracking-[0.2em] mt-2">Nuestra historia ha florecido por:</h3>
+                </div>
 
-            <!-- Contador -->
-            <div class="mb-14">
-                <div class="flex flex-wrap justify-center gap-4">
-                    <div class="counter-unit">
-                        <span id="days" class="text-3xl text-pink-600 font-bold block">0</span>
-                        <span class="text-xs uppercase font-bold text-pink-400">Días</span>
-                    </div>
-                    <div class="counter-unit">
-                        <span id="hours" class="text-3xl text-pink-600 font-bold block">0</span>
-                        <span class="text-xs uppercase font-bold text-pink-400">Horas</span>
-                    </div>
-                    <div class="counter-unit">
-                        <span id="minutes" class="text-3xl text-pink-600 font-bold block">0</span>
-                        <span class="text-xs uppercase font-bold text-pink-400">Mins</span>
-                    </div>
-                    <div class="counter-unit">
-                        <span id="seconds" class="text-3xl text-pink-600 font-bold block">0</span>
-                        <span class="text-xs uppercase font-bold text-pink-400">Segs</span>
-                    </div>
+                <!-- Contador Fuerte -->
+                <div class="flex flex-wrap justify-center gap-6 mb-12">
+                    <div class="counter-box"><span id="days" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Días</span></div>
+                    <div class="counter-box"><span id="hours" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Horas</span></div>
+                    <div class="counter-box"><span id="minutes" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Mins</span></div>
+                    <div class="counter-box"><span id="seconds" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Segs</span></div>
                 </div>
-                <p class="text-pink-300 text-sm mt-4 italic">Desde el 17 de Julio de 2025 ✨</p>
-            </div>
 
-            <!-- Música -->
-            <div class="audio-player">
-                <div id="playAction" class="play-button">
-                    <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
-                    <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                <!-- Reproductor -->
+                <div class="music-bar">
+                    <button id="playControl" class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition-all">
+                        <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 ml-1" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                    <div class="flex-grow text-left">
+                        <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Amapolas — Leo Rizzi</p>
+                        <div class="w-full h-1.5 bg-pink-100 rounded-full mt-1.5 overflow-hidden">
+                            <div id="audio-progress" class="w-0 h-full bg-pink-500 transition-all"></div>
+                        </div>
+                    </div>
+                    <audio id="bg-music" loop>
+                        <source src="Amapolas - Leo Rizzi (Vídeo Oficial)_128k (3).mp3" type="audio/mpeg">
+                    </audio>
                 </div>
-                <div class="progress-container flex-grow h-2 bg-pink-100 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="w-0 h-full"></div>
-                </div>
-                <span id="timer" class="text-sm font-bold text-pink-400">0:00</span>
-                <audio id="musica"><source src="Amapolas - Leo Rizzi (Vídeo Oficial)_128k (3).mp3" type="audio/mpeg"></audio>
             </div>
+        </section>
+
+        <!-- MENSAJE FUERTE -->
+        <section class="main-card p-12 md:p-20 mb-16 reveal">
+            <div class="card-accent text-center">
+                <h2 class="text-6xl font-romantic text-pink-600 mb-8">Eres mi inspiración</h2>
+                <div class="max-w-2xl mx-auto space-y-8 text-2xl text-slate-700 leading-relaxed font-medium italic">
+                    <p>Karen, admiro profundamente tu inteligencia y esa chispa única que tienes. No solo eres hermosa, sino que tu mente es lo que más me cautiva.</p>
+                    <p>No importa la distancia, cada vez que escucho nuestra canción o veo tus fotos, mi mundo se ilumina. Gracias por permitirme ser parte de tu historia.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN RECETA VIBRANTE -->
+        <section class="main-card p-12 md:p-20 mb-16 reveal">
+            <div class="card-accent">
+                <div class="text-center mb-12">
+                    <h2 class="text-5xl font-romantic text-pink-600 mb-4">Ingredientes de mi Karen perfecta</h2>
+                    <div class="w-24 h-1 bg-pink-400 mx-auto rounded-full"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                    <div class="recipe-item"><span class="text-3xl">🍯</span><span class="text-slate-700 font-bold text-lg">Dulzura infinita</span></div>
+                    <div class="recipe-item"><span class="text-3xl">🧠</span><span class="text-slate-700 font-bold text-lg">Inteligencia brillante</span></div>
+                    <div class="recipe-item"><span class="text-3xl">💪</span><span class="text-slate-700 font-bold text-lg">Fuerza y determinación</span></div>
+                    <div class="recipe-item"><span class="text-3xl">✨</span><span class="text-slate-700 font-bold text-lg">Magia en la mirada</span></div>
+                    <div class="recipe-item"><span class="text-3xl">👩‍🍳</span><span class="text-slate-700 font-bold text-lg">Talento de repostera linda</span></div>
+                    <div class="recipe-item"><span class="text-3xl">💖</span><span class="text-slate-700 font-bold text-lg">Todo mi amor</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACCIONES -->
+        <div class="flex flex-wrap justify-center gap-8 mb-20 reveal">
+            <button onclick="sendKiss()" class="action-btn px-12 py-6 rounded-[2rem] flex items-center gap-4 group text-2xl font-romantic">
+                <span>💋</span> Enviar un Beso
+            </button>
+            <button onclick="openHug()" class="action-btn px-12 py-6 rounded-[2rem] flex items-center gap-4 group text-2xl font-romantic">
+                <span>🫂</span> Abrazo Virtual
+            </button>
         </div>
 
-        <!-- SECCIÓN: Menú de Nuestra Receta -->
-        <div class="main-card rounded-[3.5rem] p-12 mb-16 reveal">
-            <h2 class="text-5xl font-romantic text-pink-600 text-center mb-12">Menú de Nuestra Receta 🧁</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xl text-gray-600">
-                <div class="space-y-6">
-                    <h3 class="text-pink-500 font-bold border-b-2 border-pink-100 pb-2">Ingredientes de Karen</h3>
-                    <ul class="space-y-4">
-                        <li class="flex items-center gap-3">✨ <span class="italic">3 tazas de inteligencia brillante</span></li>
-                        <li class="flex items-center gap-3">💖 <span class="italic">Dulzura infinita al gusto</span></li>
-                        <li class="flex items-center gap-3">🌶️ <span class="italic">1 pizca de carácter y determinación</span></li>
-                        <li class="flex items-center gap-3">🍯 <span class="italic">Esencia pura de ternura</span></li>
-                    </ul>
-                </div>
-                <div class="space-y-6">
-                    <h3 class="text-pink-500 font-bold border-b-2 border-pink-100 pb-2">Preparación</h3>
-                    <p class="italic leading-relaxed">
-                        Mezclar con amor infinito desde aquel 17 de julio, batir con risas constantes que iluminan el alma y dejar reposar en el corazón bajo el calor de nuestra complicidad. El resultado es la receta perfecta: la persona más maravillosa que he tenido la suerte de conocer.
-                    </p>
+        <!-- JARDÍN VIBRANTE -->
+        <section class="main-card p-10 mb-16 reveal">
+            <div class="card-accent text-center">
+                <h2 class="text-5xl font-romantic text-pink-600 mb-10">Siembra Flores para Nosotros 🌸</h2>
+                <div id="garden-container" onclick="addFlower(event)">
+                    <div id="hint-msg" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <p class="font-romantic text-4xl text-pink-200 animate-pulse">Toca aquí para plantar amor...</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- SECCIÓN: Planeta 3D -->
-        <div class="main-card rounded-[3.5rem] p-12 mb-16 text-center reveal">
-            <h2 class="text-4xl font-romantic text-pink-600 mb-6">Nuestro Mundo 🌎</h2>
-            
-            <div id="canvas-container">
-                <div class="absolute bottom-4 left-0 right-0 pointer-events-none text-pink-400 text-xs font-bold uppercase tracking-widest">
-                    Puedes rotar el mundo con tu dedo o mouse
-                </div>
-            </div>
-            
-            <p class="text-pink-400 font-bold mt-8 italic text-lg">
-                "La distancia es solo una prueba para ver qué tan lejos puede viajar el amor."
-            </p>
-        </div>
-
-        <!-- Fotos -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16 reveal">
+        <!-- GALERÍA POLAROID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20 reveal">
             <div class="polaroid -rotate-3">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen">
-                <p class="font-romantic text-center text-2xl text-pink-500 pt-4">Tu Brillo</p>
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen" class="w-full h-80 object-cover rounded-sm mb-4">
+                <p class="font-romantic text-4xl text-pink-600 text-center">Tu Luz</p>
             </div>
             <div class="polaroid rotate-2">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.18 PM.jpeg" alt="Nosotros">
-                <p class="font-romantic text-center text-2xl text-pink-500 pt-4">Nosotros</p>
+                <img src="WhatsApp Image 2026-04-25 at 11.46.18 PM.jpeg" alt="Nosotros" class="w-full h-80 object-cover rounded-sm mb-4">
+                <p class="font-romantic text-4xl text-pink-600 text-center">Nosotros</p>
             </div>
-            <div class="polaroid -rotate-2">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Karen Linda">
-                <p class="font-romantic text-center text-2xl text-pink-500 pt-4">Mi Alegría</p>
-            </div>
-        </div>
-
-        <!-- SECCIÓN: Un mensaje especial -->
-        <div class="main-card rounded-[3.5rem] p-12 md:p-16 mb-16 reveal bg-pink-50/30">
-            <h2 class="text-5xl font-romantic text-pink-600 text-center mb-8">Lo que guardo en mi corazón...</h2>
-            <div class="max-w-4xl mx-auto space-y-6 text-xl text-gray-600 italic leading-relaxed text-center">
-                <p>
-                    A veces me detengo a pensar en cómo algo tan sencillo como un mensaje puede transformarse en la razón de mi sonrisa diaria. Karen, admiro la mujer que eres: tu inteligencia no solo resuelve problemas, sino que ilumina conversaciones; tu carácter no solo te define, sino que me inspira a ser mejor.
-                </p>
-                <p>
-                    Aunque los mapas marquen kilómetros de separación, mi mente siempre encuentra el camino corto hacia ti. Gracias por permitirme ser parte de tu mundo y por ser tú el ingrediente más dulce del mío.
-                </p>
+            <div class="polaroid -rotate-1">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Alegría" class="w-full h-80 object-cover rounded-sm mb-4">
+                <p class="font-romantic text-4xl text-pink-600 text-center">Mi Cielo</p>
             </div>
         </div>
 
-        <!-- Botones de Acción -->
-        <div class="flex flex-col md:flex-row justify-center gap-6 mb-16 reveal">
-            <button onclick="mostrarModal('beso-modal')" class="custom-btn text-xl shadow-xl flex items-center justify-center gap-2">
-                Beso de Azúcar 💋
-            </button>
-            <button onclick="darAbrazo()" class="custom-btn text-xl shadow-xl flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%);">
-                Abrazo Virtual 🫂
-            </button>
+        <div class="text-center pb-20 reveal">
+            <p class="text-5xl font-romantic text-pink-600 drop-shadow-sm">Te amo con todo mi corazón ❤️</p>
         </div>
-
-        <footer class="text-center pb-10">
-            <p class="text-pink-300 font-bold uppercase tracking-widest text-sm italic">Para mi Karen, hoy y siempre ❤️</p>
-        </footer>
 
     </div>
 
     <script>
-        // --- LÓGICA DEL PLANETA 3D ---
-        let scene, camera, renderer, globe;
-        let isDragging = false;
-        let previousMouseX = 0;
-        let previousMouseY = 0;
+        function openHug() { document.getElementById('hug-modal-overlay').classList.add('active'); }
+        function closeHug() { document.getElementById('hug-modal-overlay').classList.remove('active'); }
 
-        function initGlobe() {
-            const container = document.getElementById('canvas-container');
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(container.offsetWidth, container.offsetHeight);
-            container.appendChild(renderer.domElement);
+        const flowerSVGs = [
+            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#16a34a" stroke-width="5"/><circle cx="50" cy="40" r="25" fill="#f472b6"/><circle cx="50" cy="40" r="8" fill="#fde047"/></svg>`,
+            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><g fill="#db2777"><circle cx="50" cy="25" r="15"/><circle cx="75" cy="50" r="15"/><circle cx="50" cy="75" r="15"/><circle cx="25" cy="50" r="15"/><circle cx="50" cy="50" r="10" fill="#facc15"/></g></svg>`,
+            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><path d="M50 50 L80 20 M50 50 L20 20 M50 50 L80 80 M50 50 L20 80" stroke="#ec4899" stroke-width="10" stroke-linecap="round"/><circle cx="50" cy="50" r="12" fill="#facc15"/></svg>`
+        ];
+        const tags = ["Te Amo", "Brillante", "Única", "Fuerte", "Mágica", "Mía"];
 
-            // Luces
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-            scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0xffffff, 1);
-            pointLight.position.set(5, 3, 5);
-            scene.add(pointLight);
-
-            // El Mundo
-            const geometry = new THREE.SphereGeometry(2, 64, 64);
-            const material = new THREE.MeshPhongMaterial({
-                color: 0xffffff,
-                emissive: 0xfce7f3,
-                emissiveIntensity: 0.2,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.3
-            });
-            globe = new THREE.Mesh(geometry, material);
-            scene.add(globe);
-
-            // Capa sólida suave interna
-            const innerGeo = new THREE.SphereGeometry(1.98, 64, 64);
-            const innerMat = new THREE.MeshPhongMaterial({ color: 0xfffafa });
-            const innerGlobe = new THREE.Mesh(innerGeo, innerMat);
-            globe.add(innerGlobe);
-
-            // Coordenadas aproximadas (lat, lon)
-            const salvador = { lat: 13.6929, lon: -89.2182 };
-            const colombia = { lat: 4.5709, lon: -74.2973 };
-
-            function latLonToVector3(lat, lon, radius) {
-                const phi = (90 - lat) * (Math.PI / 180);
-                const theta = (lon + 180) * (Math.PI / 180);
-                return new THREE.Vector3(
-                    -radius * Math.sin(phi) * Math.cos(theta),
-                    radius * Math.cos(phi),
-                    radius * Math.sin(phi) * Math.sin(theta)
-                );
-            }
-
-            const posSV = latLonToVector3(salvador.lat, salvador.lon, 2);
-            const posCO = latLonToVector3(colombia.lat, colombia.lon, 2);
-
-            // Marcadores Corazón
-            const createMarker = (pos) => {
-                const markerGeo = new THREE.SphereGeometry(0.08, 16, 16);
-                const markerMat = new THREE.MeshBasicMaterial({ color: 0xf472b6 });
-                const marker = new THREE.Mesh(markerGeo, markerMat);
-                marker.position.copy(pos);
-                globe.add(marker);
-            };
-            createMarker(posSV);
-            createMarker(posCO);
-
-            // Línea de conexión (Curva)
-            const midPoint = new THREE.Vector3().addVectors(posSV, posCO).multiplyScalar(0.5);
-            midPoint.normalize().multiplyScalar(2.8); // Elevar el arco
-
-            const curve = new THREE.QuadraticBezierCurve3(posSV, midPoint, posCO);
-            const points = curve.getPoints(50);
-            const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-            const lineMat = new THREE.LineBasicMaterial({ color: 0xf472b6, linewidth: 2 });
-            const line = new THREE.Line(lineGeo, lineMat);
-            globe.add(line);
-
-            camera.position.z = 6;
-
-            // Controles manuales
-            container.addEventListener('mousedown', (e) => { isDragging = true; });
-            window.addEventListener('mouseup', () => { isDragging = false; });
-            container.addEventListener('mousemove', (e) => {
-                if (isDragging) {
-                    const deltaX = e.clientX - previousMouseX;
-                    const deltaY = e.clientY - previousMouseY;
-                    globe.rotation.y += deltaX * 0.01;
-                    globe.rotation.x += deltaY * 0.01;
-                }
-                previousMouseX = e.clientX;
-                previousMouseY = e.clientY;
-            });
-
-            // Touch para móviles
-            container.addEventListener('touchstart', (e) => { 
-                isDragging = true; 
-                previousMouseX = e.touches[0].clientX;
-                previousMouseY = e.touches[0].clientY;
-            });
-            container.addEventListener('touchend', () => { isDragging = false; });
-            container.addEventListener('touchmove', (e) => {
-                if (isDragging) {
-                    const deltaX = e.touches[0].clientX - previousMouseX;
-                    const deltaY = e.touches[0].clientY - previousMouseY;
-                    globe.rotation.y += deltaX * 0.01;
-                    globe.rotation.x += deltaY * 0.01;
-                    previousMouseX = e.touches[0].clientX;
-                    previousMouseY = e.touches[0].clientY;
-                }
-            });
-
-            animate();
+        function addFlower(e) {
+            const container = document.getElementById('garden-container');
+            const hint = document.getElementById('hint-msg');
+            if (hint) hint.remove();
+            
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.style.left = `${x - 30}px`;
+            flower.style.top = `${y - 30}px`;
+            flower.style.setProperty('--r', `${Math.random() * 60 - 30}deg`);
+            flower.style.setProperty('--s', Math.random() * 0.3 + 0.9);
+            
+            flower.innerHTML = `${flowerSVGs[Math.floor(Math.random() * flowerSVGs.length)]}<div class="flower-text">${tags[Math.floor(Math.random() * tags.length)]}</div>`;
+            container.appendChild(flower);
         }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            if (!isDragging) {
-                globe.rotation.y += 0.005;
+        function sendKiss() {
+            const emojis = ['💖', '💋', '🌸', '✨', '🔥', '🥰'];
+            for(let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    p.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    p.style.left = Math.random() * 100 + 'vw';
+                    p.style.top = '-50px';
+                    p.style.fontSize = (Math.random() * 20 + 30) + 'px';
+                    p.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), 5000);
+                }, i * 80);
             }
-            renderer.render(scene, camera);
         }
 
-        window.addEventListener('resize', () => {
-            const container = document.getElementById('canvas-container');
-            if (camera && renderer) {
-                camera.aspect = container.offsetWidth / container.offsetHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.offsetWidth, container.offsetHeight);
+        const startDate = new Date(2025, 6, 17);
+        function updateCounter() {
+            const diff = new Date() - startDate;
+            document.getElementById('days').innerText = Math.floor(diff / 86400000);
+            document.getElementById('hours').innerText = Math.floor((diff / 3600000) % 24);
+            document.getElementById('minutes').innerText = Math.floor((diff / 60000) % 60);
+            document.getElementById('seconds').innerText = Math.floor((diff / 1000) % 60);
+        }
+
+        const audio = document.getElementById('bg-music');
+        const playBtn = document.getElementById('playControl');
+        const progress = document.getElementById('audio-progress');
+
+        playBtn.addEventListener('click', () => {
+            if(audio.paused) {
+                audio.play();
+                document.getElementById('play-icon').classList.add('hidden');
+                document.getElementById('pause-icon').classList.remove('hidden');
+            } else {
+                audio.pause();
+                document.getElementById('play-icon').classList.remove('hidden');
+                document.getElementById('pause-icon').classList.add('hidden');
             }
         });
 
-        // --- LÓGICA GENERAL ---
-        const fechaInicio = new Date(2025, 6, 17); 
-        function actualizarContador() {
-            const diferencia = new Date() - fechaInicio;
-            document.getElementById('days').innerText = Math.floor(diferencia / 86400000);
-            document.getElementById('hours').innerText = Math.floor((diferencia / 3600000) % 24);
-            document.getElementById('minutes').innerText = Math.floor((diferencia / 60000) % 60);
-            document.getElementById('seconds').innerText = Math.floor((diferencia / 1000) % 60);
-        }
-
-        // Audio
-        const audio = document.getElementById('musica');
-        const playBtn = document.getElementById('playAction');
-        const iconPlay = document.getElementById('icon-play');
-        const iconPause = document.getElementById('icon-pause');
-        const progressBar = document.getElementById('progress-bar');
-        const timer = document.getElementById('timer');
-
-        playBtn.onclick = () => {
-            if(audio.paused) { audio.play(); iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); }
-            else { audio.pause(); iconPlay.classList.remove('hidden'); iconPause.classList.add('hidden'); }
-        };
-
-        audio.ontimeupdate = () => {
-            progressBar.style.width = (audio.currentTime / audio.duration) * 100 + '%';
-            const m = Math.floor(audio.currentTime / 60);
-            const s = Math.floor(audio.currentTime % 60);
-            timer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-        };
-
-        // Modales
-        function mostrarModal(id) {
-            const m = document.getElementById(id);
-            const c = m.querySelector('div');
-            m.classList.remove('opacity-0', 'pointer-events-none');
-            c.classList.remove('scale-90');
-        }
-
-        function cerrarModal(id) {
-            const m = document.getElementById(id);
-            const c = m.querySelector('div');
-            m.classList.add('opacity-0', 'pointer-events-none');
-            c.classList.add('scale-90');
-        }
-
-        function darAbrazo() {
-            const container = document.getElementById('app-container');
-            container.classList.add('hug-active');
-            setTimeout(() => {
-                container.classList.remove('hug-active');
-                mostrarModal('abrazo-modal');
-            }, 1000);
-        }
+        audio.ontimeupdate = () => { if(audio.duration) progress.style.width = (audio.currentTime / audio.duration) * 100 + '%'; };
 
         window.onload = () => {
-            initGlobe();
-            setInterval(actualizarContador, 1000);
-            actualizarContador();
-            
+            setInterval(updateCounter, 1000);
+            updateCounter();
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
             }, { threshold: 0.1 });
