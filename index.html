@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para Karen - Mi Receta Favorita</title>
+    <title>Para Karen - Nuestra Dulce Historia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Three.js para el planeta 3D -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
             --rosa-fuerte: #f472b6;
@@ -28,6 +30,17 @@
             backdrop-filter: blur(10px);
             border: 8px solid white;
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+
+        /* Efecto de Carga Suave */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Reproductor de Música */
@@ -57,184 +70,357 @@
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .play-button:hover { transform: scale(1.1); }
-
-        .progress-container {
-            flex-grow: 1;
-            height: 8px;
-            background: #ffe4e6;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
         #progress-bar {
             height: 100%;
             background: linear-gradient(90deg, #f472b6, #fb7185);
             width: 0%;
         }
 
+        /* Estilo Polaroid */
         .polaroid {
             background: white;
             padding: 12px 12px 60px 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.08);
             border: 1px solid #f3f3f3;
-            transition: all 0.4s ease;
         }
-
         .polaroid img {
             width: 100%;
             height: 300px;
             object-fit: cover;
-            border-radius: 2px;
         }
 
-        /* Dulces cayendo */
-        .sprinkle {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            pointer-events: none;
-            z-index: 100;
-            border-radius: 2px;
-            animation: fall linear forwards;
+        /* Contenedor del Planeta 3D */
+        #canvas-container {
+            width: 100%;
+            height: 450px;
+            background: radial-gradient(circle, #fff5f7 0%, #fdf5e6 100%);
+            border-radius: 3rem;
+            cursor: grab;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #fce7f3;
         }
+        #canvas-container:active { cursor: grabbing; }
 
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(720deg); }
-        }
-
-        /* Modal del Beso */
-        #beso-modal {
-            transition: all 0.5s ease;
-        }
-
-        .beso-anim {
-            animation: pulse-beso 1.5s infinite;
-        }
-
-        @keyframes pulse-beso {
+        /* Animación de Abrazo */
+        @keyframes hug-shake {
             0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+            25% { transform: scale(1.02) rotate(1deg); }
+            75% { transform: scale(1.02) rotate(-1deg); }
             100% { transform: scale(1); }
         }
+        .hug-active { animation: hug-shake 0.5s ease-in-out infinite; }
 
         .custom-btn {
             background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%);
             color: white;
-            padding: 1.2rem 2.5rem;
+            padding: 1rem 2rem;
             border-radius: 9999px;
             font-weight: bold;
-            box-shadow: 0 10px 25px rgba(244, 114, 182, 0.3);
             transition: all 0.3s;
+        }
+
+        .counter-unit {
+            background: white;
+            padding: 15px 10px;
+            border-radius: 1.5rem;
+            min-width: 80px;
+            border: 2px solid #fce7f3;
         }
     </style>
 </head>
 <body>
 
-    <!-- Ventana Emergente del Beso (Oculta por defecto) -->
-    <div id="beso-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-pink-900/40 backdrop-blur-sm opacity-0 pointer-events-none">
-        <div class="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl text-center max-w-sm mx-4 transform scale-90 transition-all duration-500" id="beso-content">
-            <div class="text-8xl mb-6 beso-anim">💋</div>
-            <h3 class="text-4xl font-romantic text-pink-500 mb-4">¡Muaaaaa!</h3>
-            <p class="text-gray-600 italic text-lg mb-8">Un beso tan dulce como tú, Karen. ¡Te amo!</p>
-            <button onclick="cerrarBeso()" class="text-pink-400 font-bold hover:text-pink-600 transition-colors uppercase tracking-widest text-sm">Cerrar con amor</button>
+    <!-- Modales -->
+    <div id="beso-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-pink-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+        <div class="bg-white p-10 rounded-[3rem] shadow-2xl text-center max-w-sm mx-4 transform scale-90 transition-all duration-500" id="beso-content">
+            <div class="text-8xl mb-6 animate-bounce text-pink-500">💋</div>
+            <h3 class="text-4xl font-romantic text-pink-500 mb-4">¡Un beso gigante!</h3>
+            <p class="text-gray-600 italic text-lg mb-8">Porque eres la persona más dulce que conozco. ¡Te amo!</p>
+            <button onclick="cerrarModal('beso-modal')" class="text-pink-400 font-bold uppercase tracking-widest text-sm">Cerrar con amor</button>
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 py-16">
+    <div id="abrazo-modal" class="fixed inset-0 z-[200] flex items-center justify-center bg-pink-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+        <div class="bg-white p-10 rounded-[3rem] shadow-2xl text-center max-w-sm mx-4 transform scale-90 transition-all duration-500" id="abrazo-content">
+            <div class="text-8xl mb-6 text-pink-500">🫂</div>
+            <h3 class="text-4xl font-romantic text-pink-500 mb-4">Abrazo Virtual</h3>
+            <p class="text-gray-600 italic text-lg mb-8">Siénteme cerca de ti ahora mismo. No hay distancia para nuestro cariño.</p>
+            <button onclick="cerrarModal('abrazo-modal')" class="text-pink-400 font-bold uppercase tracking-widest text-sm">Cerrar con amor</button>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-16" id="app-container">
         
-        <!-- Cabecera Principal -->
-        <div class="main-card rounded-[3.5rem] p-10 md:p-20 text-center mb-16 relative overflow-hidden">
-            <div class="absolute -top-10 -left-10 text-6xl opacity-10 rotate-12">🧁</div>
-            <div class="absolute -bottom-10 -right-10 text-6xl opacity-10 -rotate-12">🍰</div>
+        <!-- Cabecera -->
+        <div class="main-card rounded-[3.5rem] p-10 md:p-20 text-center mb-16 reveal">
+            <h1 class="text-7xl md:text-9xl font-romantic text-pink-500 mb-6">Karen</h1>
+            <p class="text-2xl text-gray-500 mb-10 italic">"Tú eres la pizca de magia que le faltaba a mi mundo."</p>
 
-            <h1 class="text-7xl md:text-9xl font-romantic text-pink-500 mb-6 drop-shadow-sm">Karen</h1>
-            <p class="text-3xl text-gray-500 mb-10 font-light italic">"Tú eres la pizca de magia que le faltaba a mi mundo."</p>
-
-            <!-- Reproductor -->
-            <div class="audio-player">
-                <div id="playAction" class="play-button">
-                    <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                    </svg>
-                    <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
+            <!-- Contador -->
+            <div class="mb-14">
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="counter-unit">
+                        <span id="days" class="text-3xl text-pink-600 font-bold block">0</span>
+                        <span class="text-xs uppercase font-bold text-pink-400">Días</span>
+                    </div>
+                    <div class="counter-unit">
+                        <span id="hours" class="text-3xl text-pink-600 font-bold block">0</span>
+                        <span class="text-xs uppercase font-bold text-pink-400">Horas</span>
+                    </div>
+                    <div class="counter-unit">
+                        <span id="minutes" class="text-3xl text-pink-600 font-bold block">0</span>
+                        <span class="text-xs uppercase font-bold text-pink-400">Mins</span>
+                    </div>
+                    <div class="counter-unit">
+                        <span id="seconds" class="text-3xl text-pink-600 font-bold block">0</span>
+                        <span class="text-xs uppercase font-bold text-pink-400">Segs</span>
+                    </div>
                 </div>
-                <div class="progress-container">
-                    <div id="progress-bar"></div>
-                </div>
-                <span id="timer" class="text-sm font-bold text-pink-400">0:00</span>
+                <p class="text-pink-300 text-sm mt-4 italic">Desde el 17 de Julio de 2025 ✨</p>
             </div>
 
-            <audio id="musica">
-                <source src="Amapolas - Leo Rizzi (Vídeo Oficial)_128k (3).mp3" type="audio/mpeg">
-            </audio>
-
-            <p class="mt-4 text-pink-400 font-bold uppercase tracking-widest text-xs">Nuestra canción: Amapolas 🎵</p>
+            <!-- Música -->
+            <div class="audio-player">
+                <div id="playAction" class="play-button">
+                    <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                    <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+                </div>
+                <div class="progress-container flex-grow h-2 bg-pink-100 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="w-0 h-full"></div>
+                </div>
+                <span id="timer" class="text-sm font-bold text-pink-400">0:00</span>
+                <audio id="musica"><source src="Amapolas - Leo Rizzi (Vídeo Oficial)_128k (3).mp3" type="audio/mpeg"></audio>
+            </div>
         </div>
 
-        <!-- Galería de Fotos -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-20">
+        <!-- SECCIÓN: Menú de Nuestra Receta -->
+        <div class="main-card rounded-[3.5rem] p-12 mb-16 reveal">
+            <h2 class="text-5xl font-romantic text-pink-600 text-center mb-12">Menú de Nuestra Receta 🧁</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xl text-gray-600">
+                <div class="space-y-6">
+                    <h3 class="text-pink-500 font-bold border-b-2 border-pink-100 pb-2">Ingredientes de Karen</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3">✨ <span class="italic">3 tazas de inteligencia brillante</span></li>
+                        <li class="flex items-center gap-3">💖 <span class="italic">Dulzura infinita al gusto</span></li>
+                        <li class="flex items-center gap-3">🌶️ <span class="italic">1 pizca de carácter y determinación</span></li>
+                        <li class="flex items-center gap-3">🍯 <span class="italic">Esencia pura de ternura</span></li>
+                    </ul>
+                </div>
+                <div class="space-y-6">
+                    <h3 class="text-pink-500 font-bold border-b-2 border-pink-100 pb-2">Preparación</h3>
+                    <p class="italic leading-relaxed">
+                        Mezclar con amor infinito desde aquel 17 de julio, batir con risas constantes que iluminan el alma y dejar reposar en el corazón bajo el calor de nuestra complicidad. El resultado es la receta perfecta: la persona más maravillosa que he tenido la suerte de conocer.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: Planeta 3D -->
+        <div class="main-card rounded-[3.5rem] p-12 mb-16 text-center reveal">
+            <h2 class="text-4xl font-romantic text-pink-600 mb-6">Nuestro Mundo 🌎</h2>
+            
+            <div id="canvas-container">
+                <div class="absolute bottom-4 left-0 right-0 pointer-events-none text-pink-400 text-xs font-bold uppercase tracking-widest">
+                    Puedes rotar el mundo con tu dedo o mouse
+                </div>
+            </div>
+            
+            <p class="text-pink-400 font-bold mt-8 italic text-lg">
+                "La distancia es solo una prueba para ver qué tan lejos puede viajar el amor."
+            </p>
+        </div>
+
+        <!-- Fotos -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16 reveal">
             <div class="polaroid -rotate-3">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Tu Brillo">
-                <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Tu Brillo</p>
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen">
+                <p class="font-romantic text-center text-2xl text-pink-500 pt-4">Tu Brillo</p>
             </div>
             <div class="polaroid rotate-2">
                 <img src="WhatsApp Image 2026-04-25 at 11.46.18 PM.jpeg" alt="Nosotros">
-                <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Nosotros</p>
+                <p class="font-romantic text-center text-2xl text-pink-500 pt-4">Nosotros</p>
             </div>
             <div class="polaroid -rotate-2">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Mi Alegría">
-                <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Mi Alegría</p>
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Karen Linda">
+                <p class="font-romantic text-center text-2xl text-pink-500 pt-4">Mi Alegría</p>
             </div>
         </div>
 
-        <!-- Bloques de Texto Detallados -->
-        <div class="space-y-16">
-            
-            <!-- Bloque 1: Un dulce secreto -->
-            <div class="main-card rounded-[3.5rem] p-12 md:p-20 text-center relative overflow-hidden">
-                <h2 class="text-6xl font-romantic text-pink-600 mb-8">Un dulce secreto...</h2>
-                <div class="max-w-3xl mx-auto space-y-6 text-2xl text-gray-600 leading-relaxed italic">
-                    <p>
-                        Karen, admiro profundamente tu inteligencia y esa capacidad increíble que tienes para resolver cualquier resto que se te ponga enfrente. Lo que más me atrae de ti es la pasión que le pones a cada detalle; eso te hace una mujer verdaderamente única.
-                    </p>
-                    <p>
-                        A veces me quedo pensando en lo afortunado que soy de tenerte a mi lado. No es solo lo que haces, es quién eres: una mujer fuerte, decidida y con un corazón enorme que merece todo lo mejor del mundo.
-                    </p>
-                </div>
+        <!-- SECCIÓN: Un mensaje especial -->
+        <div class="main-card rounded-[3.5rem] p-12 md:p-16 mb-16 reveal bg-pink-50/30">
+            <h2 class="text-5xl font-romantic text-pink-600 text-center mb-8">Lo que guardo en mi corazón...</h2>
+            <div class="max-w-4xl mx-auto space-y-6 text-xl text-gray-600 italic leading-relaxed text-center">
+                <p>
+                    A veces me detengo a pensar en cómo algo tan sencillo como un mensaje puede transformarse en la razón de mi sonrisa diaria. Karen, admiro la mujer que eres: tu inteligencia no solo resuelve problemas, sino que ilumina conversaciones; tu carácter no solo te define, sino que me inspira a ser mejor.
+                </p>
+                <p>
+                    Aunque los mapas marquen kilómetros de separación, mi mente siempre encuentra el camino corto hacia ti. Gracias por permitirme ser parte de tu mundo y por ser tú el ingrediente más dulce del mío.
+                </p>
             </div>
-
-            <!-- Bloque 2: Mi pastelito favorito -->
-            <div class="main-card rounded-[3.5rem] p-12 md:p-20 text-center relative">
-                <div class="text-7xl mb-8">🧁</div>
-                <h2 class="text-6xl font-romantic text-pink-600 mb-8">Mi pastelito favorito</h2>
-                <div class="max-w-3xl mx-auto space-y-6 text-2xl text-gray-600 leading-relaxed italic">
-                    <p>
-                        Eres la combinación perfecta de dulzura y carácter. Admiro tu dedicación y me encanta la forma en la que iluminas mis días. Gracias por ser mi mejor amiga, mi novia y mi compañera de todas las aventuras.
-                    </p>
-                    <p>
-                        Te amo con todo mi corazón, hoy y todos los días de mi vida. Gracias por elegirme.
-                    </p>
-                </div>
-                <div class="mt-12">
-                    <button onclick="accionBeso()" class="custom-btn text-2xl shadow-xl">
-                        ¡Un beso de azúcar! 💋
-                    </button>
-                </div>
-            </div>
-
         </div>
 
-        <footer class="mt-20 text-center pb-10">
-            <p class="text-pink-300 font-bold opacity-70 uppercase tracking-widest text-sm">Creado con todo mi amor para Karen ❤️</p>
+        <!-- Botones de Acción -->
+        <div class="flex flex-col md:flex-row justify-center gap-6 mb-16 reveal">
+            <button onclick="mostrarModal('beso-modal')" class="custom-btn text-xl shadow-xl flex items-center justify-center gap-2">
+                Beso de Azúcar 💋
+            </button>
+            <button onclick="darAbrazo()" class="custom-btn text-xl shadow-xl flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%);">
+                Abrazo Virtual 🫂
+            </button>
+        </div>
+
+        <footer class="text-center pb-10">
+            <p class="text-pink-300 font-bold uppercase tracking-widest text-sm italic">Para mi Karen, hoy y siempre ❤️</p>
         </footer>
 
     </div>
 
     <script>
+        // --- LÓGICA DEL PLANETA 3D ---
+        let scene, camera, renderer, globe;
+        let isDragging = false;
+        let previousMouseX = 0;
+        let previousMouseY = 0;
+
+        function initGlobe() {
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            container.appendChild(renderer.domElement);
+
+            // Luces
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+            const pointLight = new THREE.PointLight(0xffffff, 1);
+            pointLight.position.set(5, 3, 5);
+            scene.add(pointLight);
+
+            // El Mundo
+            const geometry = new THREE.SphereGeometry(2, 64, 64);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                emissive: 0xfce7f3,
+                emissiveIntensity: 0.2,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.3
+            });
+            globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+
+            // Capa sólida suave interna
+            const innerGeo = new THREE.SphereGeometry(1.98, 64, 64);
+            const innerMat = new THREE.MeshPhongMaterial({ color: 0xfffafa });
+            const innerGlobe = new THREE.Mesh(innerGeo, innerMat);
+            globe.add(innerGlobe);
+
+            // Coordenadas aproximadas (lat, lon)
+            const salvador = { lat: 13.6929, lon: -89.2182 };
+            const colombia = { lat: 4.5709, lon: -74.2973 };
+
+            function latLonToVector3(lat, lon, radius) {
+                const phi = (90 - lat) * (Math.PI / 180);
+                const theta = (lon + 180) * (Math.PI / 180);
+                return new THREE.Vector3(
+                    -radius * Math.sin(phi) * Math.cos(theta),
+                    radius * Math.cos(phi),
+                    radius * Math.sin(phi) * Math.sin(theta)
+                );
+            }
+
+            const posSV = latLonToVector3(salvador.lat, salvador.lon, 2);
+            const posCO = latLonToVector3(colombia.lat, colombia.lon, 2);
+
+            // Marcadores Corazón
+            const createMarker = (pos) => {
+                const markerGeo = new THREE.SphereGeometry(0.08, 16, 16);
+                const markerMat = new THREE.MeshBasicMaterial({ color: 0xf472b6 });
+                const marker = new THREE.Mesh(markerGeo, markerMat);
+                marker.position.copy(pos);
+                globe.add(marker);
+            };
+            createMarker(posSV);
+            createMarker(posCO);
+
+            // Línea de conexión (Curva)
+            const midPoint = new THREE.Vector3().addVectors(posSV, posCO).multiplyScalar(0.5);
+            midPoint.normalize().multiplyScalar(2.8); // Elevar el arco
+
+            const curve = new THREE.QuadraticBezierCurve3(posSV, midPoint, posCO);
+            const points = curve.getPoints(50);
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+            const lineMat = new THREE.LineBasicMaterial({ color: 0xf472b6, linewidth: 2 });
+            const line = new THREE.Line(lineGeo, lineMat);
+            globe.add(line);
+
+            camera.position.z = 6;
+
+            // Controles manuales
+            container.addEventListener('mousedown', (e) => { isDragging = true; });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+            container.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const deltaX = e.clientX - previousMouseX;
+                    const deltaY = e.clientY - previousMouseY;
+                    globe.rotation.y += deltaX * 0.01;
+                    globe.rotation.x += deltaY * 0.01;
+                }
+                previousMouseX = e.clientX;
+                previousMouseY = e.clientY;
+            });
+
+            // Touch para móviles
+            container.addEventListener('touchstart', (e) => { 
+                isDragging = true; 
+                previousMouseX = e.touches[0].clientX;
+                previousMouseY = e.touches[0].clientY;
+            });
+            container.addEventListener('touchend', () => { isDragging = false; });
+            container.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const deltaX = e.touches[0].clientX - previousMouseX;
+                    const deltaY = e.touches[0].clientY - previousMouseY;
+                    globe.rotation.y += deltaX * 0.01;
+                    globe.rotation.x += deltaY * 0.01;
+                    previousMouseX = e.touches[0].clientX;
+                    previousMouseY = e.touches[0].clientY;
+                }
+            });
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (!isDragging) {
+                globe.rotation.y += 0.005;
+            }
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            const container = document.getElementById('canvas-container');
+            if (camera && renderer) {
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+            }
+        });
+
+        // --- LÓGICA GENERAL ---
+        const fechaInicio = new Date(2025, 6, 17); 
+        function actualizarContador() {
+            const diferencia = new Date() - fechaInicio;
+            document.getElementById('days').innerText = Math.floor(diferencia / 86400000);
+            document.getElementById('hours').innerText = Math.floor((diferencia / 3600000) % 24);
+            document.getElementById('minutes').innerText = Math.floor((diferencia / 60000) % 60);
+            document.getElementById('seconds').innerText = Math.floor((diferencia / 1000) % 60);
+        }
+
+        // Audio
         const audio = document.getElementById('musica');
         const playBtn = document.getElementById('playAction');
         const iconPlay = document.getElementById('icon-play');
@@ -242,64 +428,52 @@
         const progressBar = document.getElementById('progress-bar');
         const timer = document.getElementById('timer');
 
-        // Referencias al Modal
-        const besoModal = document.getElementById('beso-modal');
-        const besoContent = document.getElementById('beso-content');
+        playBtn.onclick = () => {
+            if(audio.paused) { audio.play(); iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); }
+            else { audio.pause(); iconPlay.classList.remove('hidden'); iconPause.classList.add('hidden'); }
+        };
 
-        playBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                iconPlay.classList.add('hidden');
-                iconPause.classList.remove('hidden');
-            } else {
-                audio.pause();
-                iconPlay.classList.remove('hidden');
-                iconPause.classList.add('hidden');
-            }
-        });
+        audio.ontimeupdate = () => {
+            progressBar.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+            const m = Math.floor(audio.currentTime / 60);
+            const s = Math.floor(audio.currentTime % 60);
+            timer.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        };
 
-        audio.addEventListener('timeupdate', () => {
-            const progress = (audio.currentTime / audio.duration) * 100;
-            progressBar.style.width = progress + '%';
-            const mins = Math.floor(audio.currentTime / 60);
-            const secs = Math.floor(audio.currentTime % 60);
-            timer.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        });
-
-        function crearDulce() {
-            const dulce = document.createElement('div');
-            dulce.className = 'sprinkle';
-            dulce.style.backgroundColor = ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#F472B6'][Math.floor(Math.random() * 6)];
-            dulce.style.left = Math.random() * 100 + 'vw';
-            dulce.style.top = '-20px';
-            dulce.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(dulce);
-            setTimeout(() => dulce.remove(), 5000);
+        // Modales
+        function mostrarModal(id) {
+            const m = document.getElementById(id);
+            const c = m.querySelector('div');
+            m.classList.remove('opacity-0', 'pointer-events-none');
+            c.classList.remove('scale-90');
         }
 
-        setInterval(crearDulce, 700);
-
-        function lluviaDulces() { 
-            for(let i=0; i<80; i++) setTimeout(crearDulce, i * 25); 
+        function cerrarModal(id) {
+            const m = document.getElementById(id);
+            const c = m.querySelector('div');
+            m.classList.add('opacity-0', 'pointer-events-none');
+            c.classList.add('scale-90');
         }
 
-        // Nueva Función para el Beso
-        function accionBeso() {
-            lluviaDulces(); // Primero los dulces
+        function darAbrazo() {
+            const container = document.getElementById('app-container');
+            container.classList.add('hug-active');
+            setTimeout(() => {
+                container.classList.remove('hug-active');
+                mostrarModal('abrazo-modal');
+            }, 1000);
+        }
+
+        window.onload = () => {
+            initGlobe();
+            setInterval(actualizarContador, 1000);
+            actualizarContador();
             
-            // Mostrar el modal
-            besoModal.classList.remove('opacity-0', 'pointer-events-none');
-            besoModal.classList.add('opacity-100', 'pointer-events-auto');
-            besoContent.classList.remove('scale-90');
-            besoContent.classList.add('scale-100');
-        }
-
-        function cerrarBeso() {
-            besoModal.classList.add('opacity-0', 'pointer-events-none');
-            besoModal.classList.remove('opacity-100', 'pointer-events-auto');
-            besoContent.classList.add('scale-90');
-            besoContent.classList.remove('scale-100');
-        }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        };
     </script>
 </body>
 </html>
