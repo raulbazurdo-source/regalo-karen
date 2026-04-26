@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Para Karen - Mi Mundo Mágico</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
@@ -20,18 +20,8 @@
             background-attachment: fixed;
             margin: 0;
             overflow-x: hidden;
-            position: relative;
             color: #1e293b;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background-image: url("https://www.transparenttextures.com/patterns/pinstriped-suit.png");
-            opacity: 0.05;
-            pointer-events: none;
-            z-index: -1;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .font-romantic { font-family: 'Dancing Script', cursive; }
@@ -39,33 +29,62 @@
         .main-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
-            border: 8px solid white;
-            box-shadow: 0 20px 50px rgba(219, 39, 119, 0.15);
-            border-radius: 3rem;
+            border: 4px solid white;
+            box-shadow: 0 10px 30px rgba(219, 39, 119, 0.1);
+            border-radius: 2rem;
             position: relative;
+            margin-bottom: 2rem;
         }
 
         .card-accent {
             background: rgba(255, 255, 255, 0.6);
-            border-radius: 2.5rem;
-            padding: 2.5rem;
-            box-shadow: inset 0 0 40px rgba(251, 113, 133, 0.1);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
         }
 
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
         }
         .reveal.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
+        /* Receta Estilos */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        .recipe-item {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-left: 3px solid #db2777;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .recipe-step {
+            background: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            font-size: 0.9rem;
+            border-bottom: 3px solid #fecdd3;
+        }
+
+        /* Modales */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -74,202 +93,104 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.4s ease;
+            padding: 1.5rem;
         }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .hug-modal {
             background: white;
-            padding: 3.5rem;
-            border-radius: 3rem;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            border: 10px solid #fbcfe8;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
-            transform: scale(0.8);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .modal-overlay.active .hug-modal {
-            transform: scale(1);
-        }
-
-        #garden-container {
-            width: 100%;
-            height: 550px;
-            background: #fff;
+            padding: 2rem;
             border-radius: 2rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .hug-modal { transform: scale(1); }
+
+        #garden-container, #game-area {
+            width: 100%;
+            height: 350px;
+            background: #fff;
+            border-radius: 1.5rem;
             position: relative;
             overflow: hidden;
-            border: 6px solid #fecdd3;
-            box-shadow: inset 0 10px 30px rgba(219, 39, 119, 0.05);
-            cursor: pointer;
+            border: 4px solid #fecdd3;
+            touch-action: none;
         }
 
         .flower {
             position: absolute;
-            animation: grow-in 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: grow-in 0.8s forwards;
             display: flex;
             flex-direction: column;
             align-items: center;
-            pointer-events: none;
         }
-
         @keyframes grow-in {
-            from { transform: scale(0) rotate(-45deg); opacity: 0; }
+            from { transform: scale(0); opacity: 0; }
             to { transform: scale(var(--s)) rotate(var(--r)); opacity: 1; }
         }
-
         .flower-text {
             background: #db2777;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.6rem;
             color: white;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.2);
-            margin-top: 5px;
-            white-space: nowrap;
-            z-index: 10;
-        }
-
-        .particle {
-            position: fixed;
-            pointer-events: none;
-            z-index: 100;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(720deg); }
-        }
-
-        .action-btn {
-            background: white;
-            border: 3px solid #f472b6;
-            color: #db2777;
-            box-shadow: 0 10px 25px rgba(219, 39, 119, 0.1);
-            transition: all 0.3s ease;
-        }
-        .action-btn:hover { 
-            transform: translateY(-5px);
-            background: #db2777;
-            color: white;
-            box-shadow: 0 15px 35px rgba(219, 39, 119, 0.25);
+            margin-top: 2px;
         }
 
         .counter-box {
             background: white;
-            padding: 25px;
-            border-radius: 2rem;
-            min-width: 110px;
-            border: 2px solid #fbcfe8;
-            box-shadow: 0 8px 20px rgba(219, 39, 119, 0.08);
+            padding: 0.75rem;
+            border-radius: 1rem;
+            border: 1px solid #fbcfe8;
         }
 
         .polaroid {
             background: white;
-            padding: 15px 15px 70px 15px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
-            border-radius: 4px;
-            transition: all 0.4s ease;
-        }
-        .polaroid:hover { transform: translateY(-10px) rotate(0deg) !important; }
-
-        .recipe-item {
-            display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 1.5rem;
-            border-left: 6px solid #db2777;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            transition: transform 0.3s ease;
-        }
-        .recipe-item:hover { transform: translateX(10px); }
-
-        .music-bar {
-            background: white;
-            border: 2px solid #f472b6;
-            border-radius: 50px;
-            padding: 10px 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            max-width: 400px;
-            margin: 0 auto;
-            box-shadow: 0 10px 30px rgba(219, 39, 119, 0.1);
-        }
-
-        /* ESTILOS MINIJUEGO */
-        #game-area {
+            padding: 10px 10px 40px 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 2px;
             width: 100%;
-            height: 400px;
-            background: #fff;
-            border-radius: 2rem;
-            position: relative;
-            overflow: hidden;
-            border: 4px dashed #f472b6;
-            cursor: crosshair;
         }
-        .game-heart {
-            position: absolute;
-            font-size: 2rem;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.1s;
-        }
-        .game-heart:active { transform: scale(1.5); }
     </style>
 </head>
 <body>
 
-    <!-- MODAL DE ABRAZO -->
     <div id="hug-modal-overlay" class="modal-overlay" onclick="closeHug()">
         <div class="hug-modal" onclick="event.stopPropagation()">
-            <div class="flex justify-center mb-6">
-                <span class="text-7xl">🫂</span>
-            </div>
-            <h2 class="text-5xl font-romantic text-pink-600 mb-4">¡Abrazo Gigante!</h2>
-            <p class="text-gray-500 italic text-xl mb-8">Siente todo mi cariño atravesando la pantalla.</p>
-            <button onclick="closeHug()" class="bg-pink-500 text-white px-8 py-3 rounded-full font-bold hover:bg-pink-600 transition-colors">Te quiero</button>
+            <div class="text-6xl mb-4">🫂</div>
+            <h2 class="text-3xl font-romantic text-pink-600 mb-2">¡Abrazo Gigante!</h2>
+            <p class="text-gray-500 italic mb-6">Siente todo mi cariño atravesando la pantalla.</p>
+            <button onclick="closeHug()" class="w-full bg-pink-500 text-white py-4 rounded-full font-bold shadow-lg">Te quiero</button>
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-6 py-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
         
-        <!-- Cabecera -->
-        <section class="main-card p-12 md:p-24 text-center mb-16 reveal">
+        <!-- CABECERA -->
+        <section class="main-card p-6 text-center reveal">
             <div class="card-accent">
-                <div class="inline-block px-4 py-1 bg-pink-100 text-pink-600 rounded-full text-xs font-bold uppercase tracking-widest mb-8">Especialmente para ti</div>
-                <h1 class="text-8xl md:text-[11rem] font-romantic text-pink-600 mb-4 leading-tight">Karen</h1>
-                
-                <div class="mb-8">
-                    <p class="text-2xl font-romantic text-pink-500 italic">Cada segundo a tu lado es un tesoro...</p>
-                    <h3 class="text-lg font-bold text-slate-600 uppercase tracking-[0.2em] mt-2">Nuestra historia ha florecido por:</h3>
+                <span class="inline-block px-3 py-1 bg-pink-100 text-pink-600 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">Especialmente para ti</span>
+                <h1 class="text-6xl md:text-9xl font-romantic text-pink-600 mb-2">Karen</h1>
+                <p class="text-xl font-romantic text-pink-500 italic mb-6">Cada segundo a tu lado es un tesoro...</p>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-8">
+                    <div class="counter-box"><span id="days" class="text-3xl text-pink-600 font-bold block">0</span><span class="text-[10px] uppercase text-gray-400">Días</span></div>
+                    <div class="counter-box"><span id="hours" class="text-3xl text-pink-600 font-bold block">0</span><span class="text-[10px] uppercase text-gray-400">Horas</span></div>
+                    <div class="counter-box"><span id="minutes" class="text-3xl text-pink-600 font-bold block">0</span><span class="text-[10px] uppercase text-gray-400">Mins</span></div>
+                    <div class="counter-box"><span id="seconds" class="text-3xl text-pink-600 font-bold block">0</span><span class="text-[10px] uppercase text-gray-400">Segs</span></div>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-6 mb-12">
-                    <div class="counter-box"><span id="days" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Días</span></div>
-                    <div class="counter-box"><span id="hours" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Horas</span></div>
-                    <div class="counter-box"><span id="minutes" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Mins</span></div>
-                    <div class="counter-box"><span id="seconds" class="text-5xl text-pink-600 font-bold block">0</span><span class="text-xs uppercase tracking-tighter text-gray-400">Segs</span></div>
-                </div>
-
-                <div class="music-bar">
-                    <button id="playControl" class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white hover:bg-pink-600 transition-all">
-                        <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 ml-1" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                        <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                <div class="bg-white border-2 border-pink-200 rounded-full p-2 flex items-center gap-3 max-w-sm mx-auto">
+                    <button id="playControl" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white shrink-0">
+                        <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 ml-1"><path d="M8 5v14l11-7z"/></svg>
+                        <svg id="pause-icon" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                     </button>
-                    <div class="flex-grow text-left">
-                        <p class="text-[10px] font-bold text-pink-500 uppercase tracking-widest">Amapolas — Leo Rizzi</p>
-                        <div class="w-full h-1.5 bg-pink-100 rounded-full mt-1.5 overflow-hidden">
-                            <div id="audio-progress" class="w-0 h-full bg-pink-500 transition-all"></div>
+                    <div class="flex-grow text-left overflow-hidden">
+                        <p class="text-[9px] font-bold text-pink-500 uppercase truncate">Amapolas — Leo Rizzi</p>
+                        <div class="w-full h-1 bg-pink-50 rounded-full mt-1 overflow-hidden">
+                            <div id="audio-progress" class="w-0 h-full bg-pink-500"></div>
                         </div>
                     </div>
                     <audio id="bg-music" loop>
@@ -279,90 +200,85 @@
             </div>
         </section>
 
-        <!-- MENSAJE FUERTE -->
-        <section class="main-card p-12 md:p-20 mb-16 reveal">
+        <!-- MENSAJE -->
+        <section class="main-card p-6 reveal">
             <div class="card-accent text-center">
-                <h2 class="text-6xl font-romantic text-pink-600 mb-8">Eres mi inspiración</h2>
-                <div class="max-w-2xl mx-auto space-y-8 text-2xl text-slate-700 leading-relaxed font-medium italic">
-                    <p>Karen, admiro profundamente tu inteligencia y esa chispa única que tienes. No solo eres hermosa, sino que tu mente es lo que más me cautiva.</p>
-                    <p>No importa la distancia, cada vez que escucho nuestra canción o veo tus fotos, mi mundo se ilumina. Gracias por permitirme ser parte de tu historia.</p>
+                <h2 class="text-3xl font-romantic text-pink-600 mb-4">Eres mi inspiración</h2>
+                <div class="text-lg text-slate-700 space-y-4 font-medium italic">
+                    <p>Karen, admiro profundamente tu inteligencia y esa chispa única que tienes.</p>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN RECETA VIBRANTE -->
-        <section class="main-card p-12 md:p-20 mb-16 reveal">
+        <!-- SECCIÓN RECETA (NUEVA) -->
+        <section class="main-card p-6 reveal">
             <div class="card-accent">
-                <div class="text-center mb-12">
-                    <h2 class="text-5xl font-romantic text-pink-600 mb-4">Ingredientes de mi Karen perfecta</h2>
-                    <div class="w-24 h-1 bg-pink-400 mx-auto rounded-full"></div>
-                </div>
+                <h2 class="text-3xl font-romantic text-pink-600 text-center mb-6">Receta de mi Karen Perfecta</h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                    <div class="recipe-item"><span class="text-3xl">🍯</span><span class="text-slate-700 font-bold text-lg">Dulzura infinita</span></div>
-                    <div class="recipe-item"><span class="text-3xl">🧠</span><span class="text-slate-700 font-bold text-lg">Inteligencia brillante</span></div>
-                    <div class="recipe-item"><span class="text-3xl">💪</span><span class="text-slate-700 font-bold text-lg">Fuerza y determinación</span></div>
-                    <div class="recipe-item"><span class="text-3xl">✨</span><span class="text-slate-700 font-bold text-lg">Magia en la mirada</span></div>
-                    <div class="recipe-item"><span class="text-3xl">👩‍🍳</span><span class="text-slate-700 font-bold text-lg">Talento de repostera linda</span></div>
-                    <div class="recipe-item"><span class="text-3xl">💖</span><span class="text-slate-700 font-bold text-lg">Todo mi amor</span></div>
+                <div class="recipe-grid mb-8">
+                    <div class="recipe-item"><span>🍯</span> Dulzura</div>
+                    <div class="recipe-item"><span>🧠</span> Inteligencia</div>
+                    <div class="recipe-item"><span>💪</span> Fuerza</div>
+                    <div class="recipe-item"><span>✨</span> Magia</div>
+                    <div class="recipe-item"><span>👩‍🍳</span> Talento</div>
+                    <div class="recipe-item"><span>💖</span> Amor</div>
+                </div>
+
+                <h3 class="text-xl font-romantic text-pink-500 mb-4 italic text-center">Instrucciones:</h3>
+                <div class="space-y-3">
+                    <div class="recipe-step">Mezclar una mente brillante con una sonrisa que ilumina el día.</div>
+                    <div class="recipe-step">Añadir determinación y valentía para enfrentar retos.</div>
+                    <div class="recipe-step">Batir con cariño y dejar reposar en mi corazón por siempre.</div>
+                    <div class="recipe-step border-pink-500 bg-pink-50 font-bold text-pink-600">Resultado: ¡La mujer de mis sueños!</div>
                 </div>
             </div>
         </section>
 
         <!-- ACCIONES -->
-        <div class="flex flex-wrap justify-center gap-8 mb-20 reveal">
-            <button onclick="sendKiss()" class="action-btn px-12 py-6 rounded-[2rem] flex items-center gap-4 group text-2xl font-romantic">
-                <span>💋</span> Enviar un Beso
-            </button>
-            <button onclick="openHug()" class="action-btn px-12 py-6 rounded-[2rem] flex items-center gap-4 group text-2xl font-romantic">
-                <span>🫂</span> Abrazo Virtual
-            </button>
+        <div class="flex flex-col gap-3 mb-10 reveal">
+            <button onclick="sendKiss()" class="bg-white border-2 border-pink-400 text-pink-600 py-4 rounded-2xl text-xl font-romantic active:scale-95">💋 Enviar un Beso</button>
+            <button onclick="openHug()" class="bg-white border-2 border-pink-400 text-pink-600 py-4 rounded-2xl text-xl font-romantic active:scale-95">🫂 Abrazo Virtual</button>
         </div>
 
-        <!-- JARDÍN VIBRANTE -->
-        <section class="main-card p-10 mb-16 reveal">
+        <!-- JARDÍN -->
+        <section class="main-card p-4 reveal">
             <div class="card-accent text-center">
-                <h2 class="text-5xl font-romantic text-pink-600 mb-10">Siembra Flores para Nosotros 🌸</h2>
+                <h2 class="text-3xl font-romantic text-pink-600 mb-6">Siembra Flores 🌸</h2>
                 <div id="garden-container" onclick="addFlower(event)">
-                    <div id="hint-msg" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <p class="font-romantic text-4xl text-pink-200 animate-pulse text-center px-4">Toca cualquier parte de este cuadro para plantar una flor con un mensaje especial...</p>
+                    <div id="hint-msg" class="absolute inset-0 flex items-center justify-center p-4">
+                        <p class="font-romantic text-2xl text-pink-200 text-center">Toca aquí para plantar una flor...</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- MINIJUEGO: ATRAPA MI AMOR -->
-        <section class="main-card p-12 md:p-20 mb-16 reveal">
+        <!-- MINIJUEGO -->
+        <section class="main-card p-4 reveal">
             <div class="card-accent text-center">
-                <h2 class="text-5xl font-romantic text-pink-600 mb-4">Minijuego: Atrapa mi Amor 💖</h2>
-                <p class="text-gray-500 mb-6">¡Atrapa todos los corazones que puedas!</p>
+                <h2 class="text-3xl font-romantic text-pink-600 mb-2">Atrapa mi Amor 💖</h2>
                 <div id="game-area">
-                    <div id="game-score" class="absolute top-4 left-4 bg-pink-500 text-white px-4 py-2 rounded-full font-bold shadow-lg z-10">Puntos: 0</div>
-                    <div id="game-start-btn" class="absolute inset-0 flex items-center justify-center z-20">
-                        <button onclick="startGame()" class="bg-pink-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-xl hover:scale-110 transition-transform">¡Empezar a Jugar!</button>
+                    <div id="game-score" class="absolute top-3 left-3 bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold z-10">Puntos: 0</div>
+                    <div id="game-start-btn" class="absolute inset-0 flex items-center justify-center z-20 bg-white/40">
+                        <button onclick="startGame()" class="bg-pink-600 text-white px-8 py-3 rounded-full font-bold shadow-lg">¡Empezar!</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- GALERÍA POLAROID -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20 reveal">
-            <div class="polaroid -rotate-3">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen" class="w-full h-80 object-cover rounded-sm mb-4">
-                <p class="font-romantic text-4xl text-pink-600 text-center">Tu Luz</p>
+        <!-- GALERÍA -->
+        <div class="flex flex-col gap-8 mb-12 reveal">
+            <div class="polaroid -rotate-2">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen" class="w-full aspect-square object-cover mb-4">
+                <p class="font-romantic text-2xl text-pink-600 text-center">Tu Luz</p>
             </div>
-            <div class="polaroid rotate-2">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.18 PM.jpeg" alt="Nosotros" class="w-full h-80 object-cover rounded-sm mb-4">
-                <p class="font-romantic text-4xl text-pink-600 text-center">Nosotros</p>
-            </div>
-            <div class="polaroid -rotate-1">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Alegría" class="w-full h-80 object-cover rounded-sm mb-4">
-                <p class="font-romantic text-4xl text-pink-600 text-center">Mi Cielo</p>
+            <div class="polaroid rotate-1">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.18 PM.jpeg" alt="Nosotros" class="w-full aspect-square object-cover mb-4">
+                <p class="font-romantic text-2xl text-pink-600 text-center">Nosotros</p>
             </div>
         </div>
 
-        <div class="text-center pb-20 reveal">
-            <p class="text-5xl font-romantic text-pink-600 drop-shadow-sm">Te amo con todo mi corazón ❤️</p>
+        <div class="text-center pb-12 reveal">
+            <p class="text-4xl font-romantic text-pink-600">Te amo, Karen ❤️</p>
         </div>
 
     </div>
@@ -370,125 +286,6 @@
     <script>
         function openHug() { document.getElementById('hug-modal-overlay').classList.add('active'); }
         function closeHug() { document.getElementById('hug-modal-overlay').classList.remove('active'); }
-
-        const flowerSVGs = [
-            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#16a34a" stroke-width="5"/><circle cx="50" cy="40" r="25" fill="#f472b6"/><circle cx="50" cy="40" r="8" fill="#fde047"/></svg>`,
-            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><g fill="#db2777"><circle cx="50" cy="25" r="15"/><circle cx="75" cy="50" r="15"/><circle cx="50" cy="75" r="15"/><circle cx="25" cy="50" r="15"/><circle cx="50" cy="50" r="10" fill="#facc15"/></g></svg>`,
-            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><path d="M50 50 L80 20 M50 50 L20 20 M50 50 L80 80 M50 50 L20 80" stroke="#ec4899" stroke-width="10" stroke-linecap="round"/><circle cx="50" cy="50" r="12" fill="#facc15"/></svg>`,
-            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 70 L50 100" stroke="#16a34a" stroke-width="6"/><path d="M50 20 C30 20 20 40 50 70 C80 40 70 20 50 20" fill="#f43f5e"/></svg>`,
-            `<svg viewBox="0 0 100 100" width="60" height="60"><path d="M50 80 L50 100" stroke="#15803d" stroke-width="4"/><circle cx="50" cy="35" r="20" fill="#d946ef"/><circle cx="30" cy="45" r="15" fill="#d946ef"/><circle cx="70" cy="45" r="15" fill="#d946ef"/><circle cx="50" cy="50" r="10" fill="#fff"/></svg>`
-        ];
-
-        const tags = [
-            "Te Amo", "Brillante", "Única", "Fuerte", "Mágica", "Mi Todo", 
-            "Eres Luz", "Mi Inspiración", "Inteligente", "Preciosa", "Valiente", 
-            "Mi Compañera", "Te Admiro", "Dulce Karen", "Mi Sueño Real", "Increíble",
-            "Pura Magia", "Mi Corazón", "Bella", "Talentosa", "Mi Mundo",
-            "Te Extraño", "Mi Favorita", "Chispa Única", "Especial", "Amor Puro",
-            "Mi Tesoro", "Radiante", "Sin Igual", "Siempre Tú", "Perfecta", "Te Pienso"
-        ];
-
-        function addFlower(e) {
-            const container = document.getElementById('garden-container');
-            const hint = document.getElementById('hint-msg');
-            if (hint) hint.remove();
-            
-            const rect = container.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const flower = document.createElement('div');
-            flower.className = 'flower';
-            flower.style.left = `${x - 30}px`;
-            flower.style.top = `${y - 30}px`;
-            flower.style.setProperty('--r', `${Math.random() * 60 - 30}deg`);
-            flower.style.setProperty('--s', Math.random() * 0.3 + 0.85);
-            
-            const randomIcon = flowerSVGs[Math.floor(Math.random() * flowerSVGs.length)];
-            const randomTag = tags[Math.floor(Math.random() * tags.length)];
-            
-            flower.innerHTML = `${randomIcon}<div class="flower-text">${randomTag}</div>`;
-            container.appendChild(flower);
-        }
-
-        function sendKiss() {
-            const emojis = ['💖', '💋', '🌸', '✨', '🔥', '🥰', '🌹'];
-            for(let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const p = document.createElement('div');
-                    p.className = 'particle';
-                    p.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-                    p.style.left = Math.random() * 100 + 'vw';
-                    p.style.top = '-50px';
-                    p.style.fontSize = (Math.random() * 20 + 30) + 'px';
-                    p.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                    document.body.appendChild(p);
-                    setTimeout(() => p.remove(), 5000);
-                }, i * 80);
-            }
-        }
-
-        /* LÓGICA DEL MINIJUEGO */
-        let score = 0;
-        let gameActive = false;
-        const gameArea = document.getElementById('game-area');
-        const scoreDisplay = document.getElementById('game-score');
-
-        function startGame() {
-            if (gameActive) return;
-            gameActive = true;
-            score = 0;
-            scoreDisplay.innerText = "Puntos: 0";
-            document.getElementById('game-start-btn').classList.add('hidden');
-            
-            const interval = setInterval(() => {
-                if (!gameActive) {
-                    clearInterval(interval);
-                    return;
-                }
-                createGameHeart();
-            }, 800);
-
-            // Termina el juego tras 30 segundos
-            setTimeout(() => {
-                gameActive = false;
-                document.getElementById('game-start-btn').classList.remove('hidden');
-                document.querySelector('#game-start-btn button').innerText = `¡Bien hecho! ${score} Puntos. ¿Otra vez?`;
-            }, 30000);
-        }
-
-        function createGameHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'game-heart';
-            const emojis = ['❤️', '💖', '💝', '💕', '💗'];
-            heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            
-            const areaWidth = gameArea.offsetWidth - 40;
-            heart.style.left = Math.random() * areaWidth + 'px';
-            heart.style.top = '-50px';
-            
-            heart.onclick = (e) => {
-                e.stopPropagation();
-                score += 10;
-                scoreDisplay.innerText = `Puntos: ${score}`;
-                heart.innerHTML = '✨';
-                setTimeout(() => heart.remove(), 200);
-            };
-
-            gameArea.appendChild(heart);
-
-            // Animación de caída manual para mayor control
-            let pos = -50;
-            const speed = Math.random() * 2 + 2;
-            const fallInterval = setInterval(() => {
-                pos += speed;
-                heart.style.top = pos + 'px';
-                if (pos > 400) {
-                    clearInterval(fallInterval);
-                    heart.remove();
-                }
-            }, 20);
-        }
 
         const startDate = new Date(2025, 6, 17);
         function updateCounter() {
@@ -499,31 +296,87 @@
             document.getElementById('seconds').innerText = Math.floor((diff / 1000) % 60);
         }
 
+        const flowerSVGs = [
+            `<svg viewBox="0 0 100 100" width="40" height="40"><circle cx="50" cy="40" r="25" fill="#f472b6"/><circle cx="50" cy="40" r="8" fill="#fde047"/></svg>`,
+            `<svg viewBox="0 0 100 100" width="40" height="40"><g fill="#db2777"><circle cx="50" cy="25" r="15"/><circle cx="75" cy="50" r="15"/><circle cx="50" cy="75" r="15"/><circle cx="25" cy="50" r="15"/><circle cx="50" cy="50" r="10" fill="#facc15"/></g></svg>`
+        ];
+        const tags = ["Amor", "Mágica", "Única", "Reina", "Luz"];
+
+        function addFlower(e) {
+            const container = document.getElementById('garden-container');
+            const hint = document.getElementById('hint-msg');
+            if (hint) hint.remove();
+            const rect = container.getBoundingClientRect();
+            const touchX = e.touches ? e.touches[0].clientX : e.clientX;
+            const touchY = e.touches ? e.touches[0].clientY : e.clientY;
+            const x = touchX - rect.left;
+            const y = touchY - rect.top;
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.style.left = `${x - 20}px`;
+            flower.style.top = `${y - 20}px`;
+            flower.style.setProperty('--r', `${Math.random() * 40 - 20}deg`);
+            flower.style.setProperty('--s', Math.random() * 0.4 + 0.8);
+            flower.innerHTML = `${flowerSVGs[Math.floor(Math.random()*flowerSVGs.length)]}<div class="flower-text">${tags[Math.floor(Math.random()*tags.length)]}</div>`;
+            container.appendChild(flower);
+        }
+
+        function sendKiss() {
+            const emojis = ['💋', '💖', '✨'];
+            for(let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div');
+                    p.className = 'fixed pointer-events-none z-[100]';
+                    p.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    p.style.left = Math.random() * 90 + 'vw';
+                    p.style.top = '100vh';
+                    p.style.fontSize = '30px';
+                    p.style.transition = 'all 3s linear';
+                    document.body.appendChild(p);
+                    setTimeout(() => { p.style.transform = `translateY(-115vh)`; p.style.opacity = '0'; }, 50);
+                    setTimeout(() => p.remove(), 3500);
+                }, i * 150);
+            }
+        }
+
+        let score = 0;
+        let gameActive = false;
+        function startGame() {
+            if (gameActive) return;
+            gameActive = true;
+            score = 0;
+            document.getElementById('game-score').innerText = "Puntos: 0";
+            document.getElementById('game-start-btn').classList.add('hidden');
+            const interval = setInterval(() => { if (!gameActive) { clearInterval(interval); return; } createGameHeart(); }, 900);
+            setTimeout(() => { gameActive = false; document.getElementById('game-start-btn').classList.remove('hidden'); document.querySelector('#game-start-btn button').innerText = `${score} pts!`; }, 20000);
+        }
+
+        function createGameHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'game-heart';
+            heart.innerText = '❤️';
+            const area = document.getElementById('game-area');
+            heart.style.left = Math.random() * (area.offsetWidth - 50) + 'px';
+            heart.style.top = '-60px';
+            const catchFn = () => { score += 10; document.getElementById('game-score').innerText = `Puntos: ${score}`; heart.remove(); };
+            heart.onclick = catchFn;
+            area.appendChild(heart);
+            let pos = -60;
+            const fall = setInterval(() => { pos += 4; heart.style.top = pos + 'px'; if (pos > 400) { clearInterval(fall); heart.remove(); } }, 16);
+        }
+
         const audio = document.getElementById('bg-music');
         const playBtn = document.getElementById('playControl');
-        const progress = document.getElementById('audio-progress');
-
-        playBtn.addEventListener('click', () => {
-            if(audio.paused) {
-                audio.play();
-                document.getElementById('play-icon').classList.add('hidden');
-                document.getElementById('pause-icon').classList.remove('hidden');
-            } else {
-                audio.pause();
-                document.getElementById('play-icon').classList.remove('hidden');
-                document.getElementById('pause-icon').classList.add('hidden');
-            }
-        });
-
-        audio.ontimeupdate = () => { if(audio.duration) progress.style.width = (audio.currentTime / audio.duration) * 100 + '%'; };
+        playBtn.onclick = () => {
+            if(audio.paused) { audio.play(); document.getElementById('play-icon').classList.add('hidden'); document.getElementById('pause-icon').classList.remove('hidden'); }
+            else { audio.pause(); document.getElementById('play-icon').classList.remove('hidden'); document.getElementById('pause-icon').classList.add('hidden'); }
+        };
+        audio.ontimeupdate = () => { if(audio.duration) document.getElementById('audio-progress').style.width = (audio.currentTime / audio.duration) * 100 + '%'; };
 
         window.onload = () => {
             setInterval(updateCounter, 1000);
-            updateCounter();
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            const obs = new IntersectionObserver(ents => ents.forEach(e => e.isIntersecting && e.target.classList.add('visible')), { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
         };
     </script>
 </body>
