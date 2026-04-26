@@ -30,7 +30,7 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
 
-        /* Music Player Styling */
+        /* Reproductor de Música */
         .audio-player {
             background: #fff5f7;
             border: 2px solid #fce7f3;
@@ -40,7 +40,7 @@
             align-items: center;
             gap: 15px;
             margin: 25px auto;
-            max-width: 350px;
+            max-width: 400px;
         }
 
         .play-button {
@@ -58,7 +58,6 @@
         }
 
         .play-button:hover { transform: scale(1.1); }
-        .play-button:active { transform: scale(0.9); }
 
         .progress-container {
             flex-grow: 1;
@@ -67,14 +66,12 @@
             border-radius: 10px;
             position: relative;
             overflow: hidden;
-            cursor: pointer;
         }
 
         #progress-bar {
             height: 100%;
             background: linear-gradient(90deg, #f472b6, #fb7185);
             width: 0%;
-            border-radius: 10px;
         }
 
         .polaroid {
@@ -83,18 +80,11 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.08);
             border: 1px solid #f3f3f3;
             transition: all 0.4s ease;
-            position: relative;
-        }
-
-        .polaroid:hover {
-            transform: translateY(-10px) rotate(0deg) !important;
-            box-shadow: 0 25px 50px rgba(244, 114, 182, 0.2);
-            z-index: 10;
         }
 
         .polaroid img {
             width: 100%;
-            height: 250px;
+            height: 300px;
             object-fit: cover;
             border-radius: 2px;
         }
@@ -122,26 +112,21 @@
             box-shadow: 0 10px 25px rgba(244, 114, 182, 0.3);
             transition: all 0.3s;
         }
-
-        .custom-btn:hover {
-            box-shadow: 0 15px 30px rgba(244, 114, 182, 0.5);
-            transform: scale(1.05);
-        }
     </style>
 </head>
 <body>
 
-    <div class="max-w-5xl mx-auto px-4 py-16">
+    <div class="max-w-6xl mx-auto px-4 py-16">
         
-        <!-- Header Section -->
+        <!-- Cabecera Principal -->
         <div class="main-card rounded-[3.5rem] p-10 md:p-20 text-center mb-16 relative overflow-hidden">
             <div class="absolute -top-10 -left-10 text-6xl opacity-10 rotate-12">🧁</div>
             <div class="absolute -bottom-10 -right-10 text-6xl opacity-10 -rotate-12">🍰</div>
 
             <h1 class="text-7xl md:text-9xl font-romantic text-pink-500 mb-6 drop-shadow-sm">Karen</h1>
-            <p class="text-2xl text-gray-500 mb-10 font-light italic max-w-lg mx-auto">"Eres la receta que no sabía que necesitaba, pero que ahora no puedo soltar."</p>
+            <p class="text-3xl text-gray-500 mb-10 font-light italic">"Tú eres la pizca de magia que le faltaba a mi mundo."</p>
 
-            <!-- Custom Audio Player -->
+            <!-- Reproductor -->
             <div class="audio-player">
                 <div id="playAction" class="play-button">
                     <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
@@ -151,26 +136,23 @@
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div class="progress-container" id="prog-container">
+                <div class="progress-container">
                     <div id="progress-bar"></div>
                 </div>
-                <span id="timer" class="text-sm font-bold text-pink-400 min-w-[40px]">0:00</span>
+                <span id="timer" class="text-sm font-bold text-pink-400">0:00</span>
             </div>
 
-            <!-- Hidden Audio Element -->
-            <audio id="musica" preload="auto">
+            <audio id="musica">
                 <source src="Amapolas - Leo Rizzi (Vídeo Oficial)_128k (3).mp3" type="audio/mpeg">
             </audio>
 
-            <div class="mt-8 flex justify-center gap-4">
-                <span class="bg-pink-100 text-pink-500 px-4 py-2 rounded-full text-sm font-bold">Leo Rizzi - Amapolas 🎵</span>
-            </div>
+            <p class="mt-4 text-pink-400 font-bold uppercase tracking-widest text-xs">Nuestra canción: Amapolas 🎵</p>
         </div>
 
-        <!-- Photo Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-24">
+        <!-- Galería de Fotos -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-20">
             <div class="polaroid -rotate-3">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Tu Brillo">
                 <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Tu Brillo</p>
             </div>
             <div class="polaroid rotate-2">
@@ -178,32 +160,50 @@
                 <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Nosotros</p>
             </div>
             <div class="polaroid -rotate-2">
-                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Momentos">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Mi Alegría">
                 <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Mi Alegría</p>
             </div>
         </div>
 
-        <!-- Final Message -->
-        <div class="main-card rounded-[3.5rem] p-12 md:p-20 text-center relative">
-            <div class="text-6xl mb-8">🧁</div>
-            <h2 class="text-5xl font-romantic text-pink-600 mb-8">Mi pastelito favorito</h2>
-            <div class="max-w-2xl mx-auto space-y-6 text-xl text-gray-600 leading-relaxed italic">
-                <p>
-                    Karen, admiro profundamente tu inteligencia y esa capacidad que tienes para resolver cualquier reto. Lo que más me derrite es ver la pasión que le pones a cada detalle; eso te hace única.
-                </p>
-                <p>
-                    Gracias por ser mi mejor amiga, mi novia y mi persona favorita. Te amo con todo mi corazón.
-                </p>
+        <!-- Bloques de Texto Detallados -->
+        <div class="space-y-16">
+            
+            <!-- Bloque 1: Un dulce secreto -->
+            <div class="main-card rounded-[3.5rem] p-12 md:p-20 text-center relative overflow-hidden">
+                <h2 class="text-6xl font-romantic text-pink-600 mb-8">Un dulce secreto...</h2>
+                <div class="max-w-3xl mx-auto space-y-6 text-2xl text-gray-600 leading-relaxed italic">
+                    <p>
+                        Karen, admiro profundamente tu inteligencia y esa capacidad increíble que tienes para resolver cualquier reto que se te ponga enfrente. Lo que más me atrae de ti es la pasión que le pones a cada detalle; eso te hace una mujer verdaderamente única.
+                    </p>
+                    <p>
+                        A veces me quedo pensando en lo afortunado que soy de tenerte a mi lado. No es solo lo que haces, es quién eres: una mujer fuerte, decidida y con un corazón enorme que merece todo lo mejor del mundo.
+                    </p>
+                </div>
             </div>
-            <div class="mt-12">
-                <button onclick="lluviaDulces()" class="custom-btn text-2xl">
-                    ¡Un beso de azúcar! 💋
-                </button>
+
+            <!-- Bloque 2: Mi pastelito favorito -->
+            <div class="main-card rounded-[3.5rem] p-12 md:p-20 text-center relative">
+                <div class="text-7xl mb-8">🧁</div>
+                <h2 class="text-6xl font-romantic text-pink-600 mb-8">Mi pastelito favorito</h2>
+                <div class="max-w-3xl mx-auto space-y-6 text-2xl text-gray-600 leading-relaxed italic">
+                    <p>
+                        Eres la combinación perfecta de dulzura y carácter. Admiro tu dedicación y me encanta la forma en la que iluminas mis días. Gracias por ser mi mejor amiga, mi novia y mi compañera de todas las aventuras.
+                    </p>
+                    <p>
+                        Te amo con todo mi corazón, hoy y todos los días de mi vida. Gracias por elegirme.
+                    </p>
+                </div>
+                <div class="mt-12">
+                    <button onclick="lluviaDulces()" class="custom-btn text-2xl shadow-xl">
+                        ¡Un beso de azúcar! 💋
+                    </button>
+                </div>
             </div>
+
         </div>
 
-        <footer class="mt-24 text-center pb-12">
-            <p class="text-pink-400 font-bold opacity-60">Creado para Karen, la persona más dulce del mundo ❤️</p>
+        <footer class="mt-20 text-center pb-10">
+            <p class="text-pink-300 font-bold opacity-70 uppercase tracking-widest text-sm">Creado con todo mi amor para Karen ❤️</p>
         </footer>
 
     </div>
@@ -215,7 +215,6 @@
         const iconPause = document.getElementById('icon-pause');
         const progressBar = document.getElementById('progress-bar');
         const timer = document.getElementById('timer');
-        const progContainer = document.getElementById('prog-container');
 
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
@@ -230,27 +229,17 @@
         });
 
         audio.addEventListener('timeupdate', () => {
-            if (audio.duration) {
-                const progress = (audio.currentTime / audio.duration) * 100;
-                progressBar.style.width = progress + '%';
-                const mins = Math.floor(audio.currentTime / 60);
-                const secs = Math.floor(audio.currentTime % 60);
-                timer.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            }
-        });
-
-        progContainer.addEventListener('click', (e) => {
-            const width = progContainer.clientWidth;
-            const clickX = e.offsetX;
-            const duration = audio.duration;
-            audio.currentTime = (clickX / width) * duration;
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = progress + '%';
+            const mins = Math.floor(audio.currentTime / 60);
+            const secs = Math.floor(audio.currentTime % 60);
+            timer.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         });
 
         function crearDulce() {
             const dulce = document.createElement('div');
             dulce.className = 'sprinkle';
-            const colores = ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#F472B6', '#FBB6CE'];
-            dulce.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+            dulce.style.backgroundColor = ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#F472B6'][Math.floor(Math.random() * 6)];
             dulce.style.left = Math.random() * 100 + 'vw';
             dulce.style.top = '-20px';
             dulce.style.animationDuration = (Math.random() * 3 + 2) + 's';
@@ -258,13 +247,9 @@
             setTimeout(() => dulce.remove(), 5000);
         }
 
-        setInterval(crearDulce, 800);
-
-        function lluviaDulces() {
-            for(let i=0; i<80; i++) {
-                setTimeout(crearDulce, i * 30);
-            }
-        }
+        setInterval(crearDulce, 700);
+        function lluviaDulces() { for(let i=0; i<80; i++) setTimeout(crearDulce, i * 25); }
     </script>
 </body>
 </html>
+      
