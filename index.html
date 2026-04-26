@@ -3,62 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Receta Perfecta - Karen</title>
+    <title>Para Karen - Mi Receta Favorita</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --fresa: #ffeded;
-            --menta: #e6fffa;
-            --vainilla: #fdfbf7;
-            --miel: #fff9db;
             --rosa-fuerte: #f472b6;
+            --vainilla: #fdfbf7;
         }
 
         body {
             font-family: 'Quicksand', sans-serif;
             background-color: #fdf5e6;
-            background-image: 
-                linear-gradient(#f0e6d2 1.5px, transparent 1.5px),
-                linear-gradient(90deg, #f0e6d2 1.5px, transparent 1.5px);
-            background-size: 35px 35px;
-            color: #5d5451;
-            scroll-behavior: smooth;
+            background-image: radial-gradient(#fbb6ce 1px, transparent 1px);
+            background-size: 25px 25px;
+            margin: 0;
+            overflow-x: hidden;
         }
 
-        .font-romantic {
-            font-family: 'Dancing Script', cursive;
+        .font-romantic { font-family: 'Dancing Script', cursive; }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 8px solid white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
 
-        .page-container {
-            position: relative;
-            background-image: radial-gradient(#fbb6ce 2px, transparent 2px);
-            background-size: 30px 30px;
-        }
-
-        .content-wrapper {
-            background-color: rgba(253, 251, 247, 0.98);
-            max-width: 1000px;
-            margin: 0 auto;
-            box-shadow: 0 0 60px rgba(0,0,0,0.1);
-            border-left: 2px solid #fce7f3;
-            border-right: 2px solid #fce7f3;
-        }
-
-        /* Reproductor de Audio Personalizado */
+        /* Music Player Styling */
         .audio-player {
-            background: white;
-            border-radius: 2rem;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(244, 114, 182, 0.2);
+            background: #fff5f7;
             border: 2px solid #fce7f3;
-            max-width: 400px;
-            margin: 2rem auto;
+            border-radius: 50px;
+            padding: 10px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 25px auto;
+            max-width: 350px;
         }
 
-        .play-btn {
-            width: 60px;
-            height: 60px;
+        .play-button {
+            width: 55px;
+            height: 55px;
             background: var(--rosa-fuerte);
             border-radius: 50%;
             display: flex;
@@ -66,71 +53,59 @@
             justify-content: center;
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(244, 114, 182, 0.4);
+            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .play-btn:hover {
-            transform: scale(1.1);
-            background: #db2777;
-        }
+        .play-button:hover { transform: scale(1.1); }
+        .play-button:active { transform: scale(0.9); }
 
-        .progress-bar {
-            height: 6px;
-            background: #ffe4e6;
-            border-radius: 3px;
+        .progress-container {
             flex-grow: 1;
-            margin: 0 1rem;
+            height: 8px;
+            background: #ffe4e6;
+            border-radius: 10px;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
-        #progress-fill {
+        #progress-bar {
             height: 100%;
-            background: var(--rosa-fuerte);
+            background: linear-gradient(90deg, #f472b6, #fb7185);
             width: 0%;
-            transition: width 0.1s linear;
+            border-radius: 10px;
         }
 
         .polaroid {
-            background: #fff;
-            padding: 15px 15px 75px 15px;
-            box-shadow: 0 15px 40px rgba(219, 156, 178, 0.4);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white;
+            padding: 12px 12px 60px 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            border: 1px solid #f3f3f3;
+            transition: all 0.4s ease;
             position: relative;
-            border: 1px solid #f3e5f5;
+        }
+
+        .polaroid:hover {
+            transform: translateY(-10px) rotate(0deg) !important;
+            box-shadow: 0 25px 50px rgba(244, 114, 182, 0.2);
+            z-index: 10;
         }
 
         .polaroid img {
             width: 100%;
-            height: auto;
-            border-radius: 4px;
+            height: 250px;
             object-fit: cover;
-            min-height: 280px;
+            border-radius: 2px;
         }
 
-        .card-bakery {
-            background: #fff;
-            border: 3px dashed var(--rosa-fuerte);
-            border-radius: 25px;
-        }
-
-        .recipe-banner {
-            background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%);
-            border-radius: 2.5rem;
-            border: 8px solid white;
-            box-shadow: 0 20px 40px rgba(244, 114, 182, 0.4);
-        }
-
-        /* Sprinkles Animados */
         .sprinkle {
             position: fixed;
-            top: -10%;
+            width: 10px;
+            height: 10px;
             pointer-events: none;
             z-index: 100;
-            width: 8px;
-            height: 18px;
-            border-radius: 4px;
+            border-radius: 2px;
             animation: fall linear forwards;
         }
 
@@ -138,235 +113,156 @@
             to { transform: translateY(110vh) rotate(720deg); }
         }
 
-        .section-pink { background-color: #ffe4e6; } 
-        .section-mint { background-color: #e6fffa; } 
-        .section-honey { background-color: #fffbeb; } 
-
-        .icon-float {
-            animation: float 3s ease-in-out infinite;
+        .custom-btn {
+            background: linear-gradient(135deg, #f472b6 0%, #fb7185 100%);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(244, 114, 182, 0.3);
+            transition: all 0.3s;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .custom-btn:hover {
+            box-shadow: 0 15px 30px rgba(244, 114, 182, 0.5);
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
 
-    <div class="page-container">
-        <div class="content-wrapper">
-            
-            <!-- Encabezado Principal con Música -->
-            <header class="min-h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden section-honey">
-                <div class="absolute inset-0 opacity-20" style="background-image: url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');"></div>
-                
-                <div class="absolute top-10 left-10 text-pink-400 opacity-60 text-6xl rotate-12 icon-float">🍩</div>
-                <div class="absolute bottom-20 right-10 text-green-400 opacity-60 text-6xl -rotate-12 icon-float" style="animation-delay: 1s">🥣</div>
-                <div class="absolute top-1/4 right-20 text-yellow-500 opacity-60 text-6xl rotate-45 icon-float" style="animation-delay: 0.5s">🍰</div>
-                
-                <div class="relative z-10 p-10 md:p-12 rounded-[3rem] bg-white bg-opacity-95 border-[10px] border-pink-100 shadow-2xl transform hover:scale-[1.01] transition-transform duration-500 max-w-2xl w-full">
-                    <span class="text-pink-400 font-bold tracking-widest uppercase text-xs mb-4 block">Presiona para escuchar nuestra canción</span>
-                    
-                    <!-- Reproductor de Audio Personalizado -->
-                    <div class="audio-player flex items-center">
-                        <div id="playBtn" class="play-btn">
-                            <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                            </svg>
-                            <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <div class="progress-bar">
-                            <div id="progress-fill"></div>
-                        </div>
-                        <span class="text-xs font-bold text-pink-400" id="timeDisplay">0:00</span>
-                    </div>
+    <div class="max-w-5xl mx-auto px-4 py-16">
+        
+        <!-- Header Section -->
+        <div class="main-card rounded-[3.5rem] p-10 md:p-20 text-center mb-16 relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 text-6xl opacity-10 rotate-12">🧁</div>
+            <div class="absolute -bottom-10 -right-10 text-6xl opacity-10 -rotate-12">🍰</div>
 
-                    <audio id="loveSong">
-                        <source src="Amapolas - Leo Rizzi (Vídeo Oficial)_128k (3).mp3" type="audio/mpeg">
-                        Tu navegador no soporta el audio.
-                    </audio>
+            <h1 class="text-7xl md:text-9xl font-romantic text-pink-500 mb-6 drop-shadow-sm">Karen</h1>
+            <p class="text-2xl text-gray-500 mb-10 font-light italic max-w-lg mx-auto">"Eres la receta que no sabía que necesitaba, pero que ahora no puedo soltar."</p>
 
-                    <h1 class="text-7xl md:text-8xl font-romantic text-pink-500 mb-6">Karen</h1>
-                    <p class="text-xl md:text-2xl font-light text-gray-500 mx-auto leading-relaxed">
-                        "Cocinaste mi corazón a fuego lento y ahora es todo tuyo."
-                    </p>
-                </div>
-                
-                <div class="mt-16 animate-bounce text-pink-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
+            <!-- Custom Audio Player -->
+            <div class="audio-player">
+                <div id="playAction" class="play-button">
+                    <svg id="icon-play" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+                    <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                     </svg>
                 </div>
-            </header>
-
-            <div class="scalloped-divider"></div>
-
-            <!-- Frase Romántica -->
-            <section class="section-pink py-20 border-b-4 border-double border-pink-300">
-                <div class="max-w-3xl mx-auto px-6">
-                    <div class="recipe-banner p-12 text-center relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-full h-full opacity-15" style="background-image: url('https://www.transparenttextures.com/patterns/polka-dots.png');"></div>
-                        <div class="text-6xl mb-6 relative">👩‍🍳</div>
-                        <h2 class="text-4xl font-romantic text-white drop-shadow-lg mb-6 relative">Mi inspiración diaria</h2>
-                        <p class="text-2xl text-white font-medium italic relative leading-relaxed">
-                            "Karen, lo que más me cautiva de ti es esa mezcla perfecta entre tu inteligencia brillante y la pasión que le pones a cada cosa que horneas."
-                        </p>
-                    </div>
+                <div class="progress-container" id="prog-container">
+                    <div id="progress-bar"></div>
                 </div>
-            </section>
+                <span id="timer" class="text-sm font-bold text-pink-400 min-w-[40px]">0:00</span>
+            </div>
 
-            <main>
-                <!-- Foto 1: Inteligencia -->
-                <section class="py-24 section-honey border-b-2 border-dashed border-yellow-200">
-                    <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
-                        <div class="w-full md:w-1/2 polaroid" style="transform: rotate(-3deg);">
-                            <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen">
-                            <div class="absolute bottom-6 left-0 right-0 text-center font-romantic text-3xl text-pink-500">Mente brillante</div>
-                        </div>
-                        <div class="w-full md:w-1/2 space-y-6 bg-white p-10 rounded-3xl shadow-lg border-2 border-pink-50">
-                            <div class="text-pink-400 text-5xl">🥐</div>
-                            <h3 class="text-4xl font-romantic text-pink-600">Admiro quién eres</h3>
-                            <p class="text-gray-600 text-lg leading-relaxed text-justify">
-                                Me encanta verte concentrada, decidida y entregada a tus sueños. Tienes una magia única; no solo horneas postres increíbles, sino que con tu inteligencia iluminas cualquier conversación. Eres mi ejemplo de dedicación y amor.
-                            </p>
-                        </div>
-                    </div>
-                </section>
+            <!-- Hidden Audio Element -->
+            <audio id="musica" preload="auto">
+                <source src="Amapolas - Leo Rizzi (Vídeo Oficial)_128k (3).mp3" type="audio/mpeg">
+            </audio>
 
-                <!-- Foto 2: Sonrisa -->
-                <section class="py-24 section-mint border-y-4 border-dashed border-green-200">
-                    <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-12">
-                        <div class="w-full md:w-1/2 polaroid" style="transform: rotate(3deg);">
-                            <img src="WhatsApp Image 2026-04-25 at 11.46.18 PM.jpeg" alt="Juntos">
-                            <div class="absolute bottom-6 left-0 right-0 text-center font-romantic text-3xl text-pink-500">Dulce alegría</div>
-                        </div>
-                        <div class="w-full md:w-1/2 space-y-6 bg-white p-10 rounded-3xl shadow-lg border-2 border-green-50">
-                            <div class="text-green-500 text-5xl text-right">🍦</div>
-                            <h3 class="text-4xl font-romantic text-pink-600 text-right">Nuestra conexión</h3>
-                            <p class="text-gray-600 text-lg leading-relaxed text-justify">
-                                Estar contigo es como encontrar el punto exacto de dulzor. Amo cómo nos complementamos, cómo nos reímos de tonterías y cómo me haces sentir que somos el mejor equipo del mundo. Tu felicidad es mi ingrediente favorito.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Foto 3: Cómplices -->
-                <section class="py-24 section-pink">
-                    <div class="max-w-4xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
-                        <div class="w-full md:w-1/2 polaroid" style="transform: rotate(-1deg);">
-                            <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Momentos">
-                            <div class="absolute bottom-6 left-0 right-0 text-center font-romantic text-3xl text-pink-500">Cómplices siempre</div>
-                        </div>
-                        <div class="w-full md:w-1/2 space-y-6 bg-white p-10 rounded-3xl shadow-lg border-2 border-pink-50">
-                            <div class="text-yellow-500 text-5xl">🍪</div>
-                            <h3 class="text-4xl font-romantic text-pink-600">Amor horneado a mano</h3>
-                            <p class="text-gray-600 text-lg leading-relaxed text-justify">
-                                No importa el plan, si es contigo, es perfecto. Gracias por ser mi mejor amiga y mi novia, por dejarme ser parte de tu mundo y por compartir conmigo cada pequeño logro. Eres la mujer que siempre soñé tener a mi lado.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-            </main>
-
-            <!-- Notas de sabor -->
-            <section class="py-24 px-6 relative overflow-hidden" style="background-color: #fce7f3;">
-                <div class="absolute inset-0 opacity-15" style="background-image: url('https://www.transparenttextures.com/patterns/diagmonds.png');"></div>
-                
-                <div class="max-w-3xl mx-auto text-center relative z-10">
-                    <h2 class="text-5xl font-romantic text-pink-700 mb-12">Detalles que me enamoran</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="card-bakery p-10 italic text-gray-700 bg-white flex flex-col items-center gap-4 shadow-xl transform hover:rotate-1 transition">
-                            <span class="text-4xl">🍓</span> 
-                            <p>"Tu capacidad de resolver cualquier reto con inteligencia."</p>
-                        </div>
-                        <div class="card-bakery p-10 italic text-gray-700 bg-white flex flex-col items-center gap-4 shadow-xl transform hover:-rotate-1 transition">
-                            <span class="text-4xl">🍰</span> 
-                            <p>"La pasión que pones en cada detalle de tu repostería."</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Carta Final -->
-            <section class="py-24 px-6 text-center section-honey relative">
-                <div class="max-w-2xl mx-auto space-y-10">
-                    <div class="icon-float text-7xl">🧁</div>
-                    <h2 class="text-6xl font-romantic text-pink-600">Mi pastelito favorito</h2>
-                    <div class="card-bakery p-12 md:p-16 space-y-8 text-xl text-gray-700 leading-relaxed text-justify border-pink-200 bg-white shadow-2xl relative">
-                        <p>
-                            Karen, este espacio es solo una pequeña muestra de lo mucho que te admiro. Eres una mujer excepcional, con una mente brillante y un corazón de oro. Gracias por elegirme para caminar a tu lado y por hacer que nuestra vida sea la receta más deliciosa de todas.
-                        </p>
-                        <p>
-                            Te amo con todo mi ser.
-                        </p>
-                    </div>
-                    <div class="pt-10">
-                        <button onclick="lluviaDeDulces()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-6 px-16 rounded-full shadow-2xl transition transform hover:scale-110 active:scale-95 border-4 border-white text-2xl">
-                            ¡Un beso de azúcar! 💋
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <footer class="py-16 text-center text-pink-500 text-lg font-bold section-mint border-t-8 border-double border-pink-100">
-                Solo para Karen, mi repostera favorita 👩‍🍳💕
-            </footer>
-
+            <div class="mt-8 flex justify-center gap-4">
+                <span class="bg-pink-100 text-pink-500 px-4 py-2 rounded-full text-sm font-bold">Leo Rizzi - Amapolas 🎵</span>
+            </div>
         </div>
+
+        <!-- Photo Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-24">
+            <div class="polaroid -rotate-3">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM.jpeg" alt="Karen">
+                <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Tu Brillo</p>
+            </div>
+            <div class="polaroid rotate-2">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.18 PM.jpeg" alt="Nosotros">
+                <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Nosotros</p>
+            </div>
+            <div class="polaroid -rotate-2">
+                <img src="WhatsApp Image 2026-04-25 at 11.46.19 PM (1).jpeg" alt="Momentos">
+                <p class="font-romantic text-center text-3xl text-pink-500 pt-6">Mi Alegría</p>
+            </div>
+        </div>
+
+        <!-- Final Message -->
+        <div class="main-card rounded-[3.5rem] p-12 md:p-20 text-center relative">
+            <div class="text-6xl mb-8">🧁</div>
+            <h2 class="text-5xl font-romantic text-pink-600 mb-8">Mi pastelito favorito</h2>
+            <div class="max-w-2xl mx-auto space-y-6 text-xl text-gray-600 leading-relaxed italic">
+                <p>
+                    Karen, admiro profundamente tu inteligencia y esa capacidad que tienes para resolver cualquier reto. Lo que más me derrite es ver la pasión que le pones a cada detalle; eso te hace única.
+                </p>
+                <p>
+                    Gracias por ser mi mejor amiga, mi novia y mi persona favorita. Te amo con todo mi corazón.
+                </p>
+            </div>
+            <div class="mt-12">
+                <button onclick="lluviaDulces()" class="custom-btn text-2xl">
+                    ¡Un beso de azúcar! 💋
+                </button>
+            </div>
+        </div>
+
+        <footer class="mt-24 text-center pb-12">
+            <p class="text-pink-400 font-bold opacity-60">Creado para Karen, la persona más dulce del mundo ❤️</p>
+        </footer>
+
     </div>
 
     <script>
-        const audio = document.getElementById('loveSong');
-        const playBtn = document.getElementById('playBtn');
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
-        const progressFill = document.getElementById('progress-fill');
-        const timeDisplay = document.getElementById('timeDisplay');
+        const audio = document.getElementById('musica');
+        const playBtn = document.getElementById('playAction');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        const progressBar = document.getElementById('progress-bar');
+        const timer = document.getElementById('timer');
+        const progContainer = document.getElementById('prog-container');
 
-        // Control del reproductor
         playBtn.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
-                playIcon.classList.add('hidden');
-                pauseIcon.classList.remove('hidden');
+                iconPlay.classList.add('hidden');
+                iconPause.classList.remove('hidden');
             } else {
                 audio.pause();
-                playIcon.classList.remove('hidden');
-                pauseIcon.classList.add('hidden');
+                iconPlay.classList.remove('hidden');
+                iconPause.classList.add('hidden');
             }
         });
 
-        // Actualizar barra de progreso y tiempo
         audio.addEventListener('timeupdate', () => {
-            const percent = (audio.currentTime / audio.duration) * 100;
-            progressFill.style.width = percent + '%';
-            
-            const minutes = Math.floor(audio.currentTime / 60);
-            const seconds = Math.floor(audio.currentTime % 60);
-            timeDisplay.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (audio.duration) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressBar.style.width = progress + '%';
+                const mins = Math.floor(audio.currentTime / 60);
+                const secs = Math.floor(audio.currentTime % 60);
+                timer.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
         });
 
-        // Efectos visuales de lluvia de dulces
-        function createSprinkle() {
-            const sprinkle = document.createElement('div');
-            sprinkle.className = 'sprinkle';
-            const colors = ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#FF9AA2', '#f472b6'];
-            sprinkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            sprinkle.style.left = Math.random() * 100 + 'vw';
-            sprinkle.style.animationDuration = Math.random() * 2 + 3 + 's';
-            sprinkle.style.opacity = Math.random() * 0.9 + 0.1;
-            document.body.appendChild(sprinkle);
-            setTimeout(() => sprinkle.remove(), 5000);
-        }
-        
-        setInterval(createSprinkle, 500);
+        progContainer.addEventListener('click', (e) => {
+            const width = progContainer.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            audio.currentTime = (clickX / width) * duration;
+        });
 
-        function lluviaDeDulces() {
-            for(let i = 0; i < 100; i++) {
-                setTimeout(createSprinkle, i * 15);
+        function crearDulce() {
+            const dulce = document.createElement('div');
+            dulce.className = 'sprinkle';
+            const colores = ['#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#F472B6', '#FBB6CE'];
+            dulce.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+            dulce.style.left = Math.random() * 100 + 'vw';
+            dulce.style.top = '-20px';
+            dulce.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(dulce);
+            setTimeout(() => dulce.remove(), 5000);
+        }
+
+        setInterval(crearDulce, 800);
+
+        function lluviaDulces() {
+            for(let i=0; i<80; i++) {
+                setTimeout(crearDulce, i * 30);
             }
         }
     </script>
